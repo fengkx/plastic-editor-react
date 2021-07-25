@@ -1,3 +1,3 @@
-export function Text({ children }) {
-  return <span>{children}</span>;
+export function Text({ children, focusTextHelper }) {
+  return <span onClickCapture={focusTextHelper(0)}>{children}</span>;
 }

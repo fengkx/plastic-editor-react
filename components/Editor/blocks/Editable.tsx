@@ -7,8 +7,6 @@ import {
   deleteBlockAtom,
   IDLEN,
   newBlockAtom,
-  pageFamily,
-  pageIdAtom,
   useBlock,
   usePage,
 } from "../adapters/memory";
@@ -20,7 +18,7 @@ import {
 } from "../store";
 import { useKey } from "../../../hooks/useKey";
 import { PageEngine } from "@plastic-editor/protocol";
-import { useMountEffect, useRerender } from "@react-hookz/web";
+import { useClickOutside, useMountEffect, useRerender } from "@react-hookz/web";
 import tinykeys from "tinykeys";
 import produce from "immer";
 import clsx from "clsx";
@@ -111,6 +109,9 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       );
       shouldDeleteBlockRef.current = textArea.value.length === 0;
     }, 0);
+  });
+  useClickOutside(textareaRef, () => {
+    setAnchorOffset(Infinity);
   });
   useEffect(() => {
     if (!textareaRef.current) {

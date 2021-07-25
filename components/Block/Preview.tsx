@@ -6,7 +6,7 @@ import {
   LINE_HEIGHT_ATOM,
 } from "../Editor/store";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { tokenizer } from "../Editor/parser";
+import { Token, tokenizer } from "../Editor/parser";
 import { blockFamily, pageIdAtom } from "../Editor/adapters/memory";
 import { nanoid } from "nanoid";
 import deepEqual from "fast-deep-equal/es6/react";
@@ -19,16 +19,21 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId }) => {
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
   const focusCallback = useCallback(
     (ev) => {
-      setAnchorOffset(
-        Math.floor((ev.clientX - ev.target.getBoundingClientRect().x) / 8)
-      );
+      ev.stopPropagation();
       setEditingBlockId(blockId);
     },
-    [blockId, setEditingBlockId, setAnchorOffset]
+    [blockId, setEditingBlockId]
   );
   const block = useAtomValue(
     blockFamily({ id: blockId, pageId: useAtomValue(pageIdAtom) })
   );
+  const focusTextHelper =
+    (token: Token) =>
+    (offset: number = 0) =>
+    (ev) => {
+      const selection = window.getSelection();
+      setAnchorOffset((selection?.anchorOffset ?? 0) + token.position + offset);
+    };
   const parsed = tokenizer(block.content, []);
   return (
     <div
@@ -41,6 +46,7 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId }) => {
             key={nanoid(4)}
             {...token.meta.props}
             blockId={blockId}
+            focusTextHelper={focusTextHelper(token)}
           />
         );
       })}

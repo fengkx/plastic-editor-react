@@ -7,7 +7,6 @@ import { IDLEN } from "../components/Editor/adapters/memory";
 const Home: NextPage = () => {
   const router = useRouter();
   useMountEffect(() => {
-    console.log(router);
     router.push(`/note/${nanoid(IDLEN)}`);
   });
   return null;

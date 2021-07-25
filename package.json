@@ -3,7 +3,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier -w ."
   },
   "dependencies": {
     "@plastic-editor/protocol": "^0.0.6",
@@ -27,6 +29,7 @@
     "eslint": "^7.31.0",
     "eslint-config-next": "^11.0.1",
     "postcss": "^8.3.5",
+    "prettier": "^2.3.2",
     "tailwindcss": "^2.2.4",
     "typescript": "^4.3.5"
   }
