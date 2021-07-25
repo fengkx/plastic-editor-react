@@ -5,6 +5,7 @@ import {
   ShallowBlock,
 } from "@plastic-editor/protocol/lib/protocol";
 import { format } from "date-fns";
+import FileSaver from "file-saver";
 import produce from "immer";
 import { atom, useAtom } from "jotai";
 import {
@@ -15,6 +16,7 @@ import {
 } from "jotai/utils";
 import { nanoid } from "nanoid";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
+import { Note } from "./types";
 
 export const IDLEN = 8;
 
@@ -161,6 +163,32 @@ export const newBlockAtom = atom<
 
 export const pageValuesAtom = atom((get) => {
   return Object.values(get(pagesAtom));
+});
+
+export const saveNotesAtom = atom(null, (get) => {
+  const pages = Object.values(get(pagesAtom));
+  const blocks = get(blocksAtom);
+  const stars = get(starsAtom);
+  const note: Note = {
+    pages,
+    blocks,
+    stars,
+  };
+  const jsonStr = JSON.stringify(note);
+  const blob = new Blob([jsonStr], { type: "text/plain;charset=utf-8" });
+  FileSaver.saveAs(blob, "note.json");
+});
+
+export const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
+  set(
+    pagesAtom,
+    update.pages.reduce((acc, cur) => {
+      acc[cur.id] = cur;
+      return acc;
+    }, {})
+  );
+  set(blocksAtom, update.blocks);
+  set(starsAtom, update.stars);
 });
 
 export const usePage = () => {

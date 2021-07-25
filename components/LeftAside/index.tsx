@@ -1,16 +1,50 @@
 import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
-import React from "react";
-import { pageFamily, pageIdAtom, starsAtom } from "../Editor/adapters/memory";
+import React, { useCallback } from "react";
+import {
+  loadNotesAtom,
+  pageFamily,
+  pageIdAtom,
+  saveNotesAtom,
+  starsAtom,
+} from "../Editor/adapters/memory";
+import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
-
 export const LeftAside: React.FC = () => {
+  const saveNote = useUpdateAtom(saveNotesAtom);
+  const loadNote = useUpdateAtom(loadNotesAtom);
+  const onUploadFile = useCallback(
+    async (ev) => {
+      const file = ev!.target!.files![0] as File;
+      const text = await file.text();
+      const note = JSON.parse(text) as Note;
+      loadNote(note);
+    },
+    [loadNote]
+  );
   return (
     <aside className="w-64 bg-gray-100">
       <div className="toolbar flex space-x-2 p-4">
-        <ToolButton src="/icons/download-2-line.svg" alt="Save button" />
-        <ToolButton src="/icons/folderOpen.svg" alt="Open File" />
+        <ToolButton
+          src="/icons/download-2-line.svg"
+          alt="Save button"
+          onClick={saveNote}
+        />
+        <input
+          className="hidden"
+          onChange={onUploadFile}
+          id="import"
+          type="file"
+        />
+        <label htmlFor="import" className="cursor-pointer">
+          {/* eslint-disable-next-line  @next/next/no-img-element */}
+          <img
+            src="/icons/folderOpen.svg"
+            alt="Open File"
+            className="bg-white rounded p-1"
+          />
+        </label>
       </div>
       <div className="font-medium mt-4">
         <Link href="/notes">
