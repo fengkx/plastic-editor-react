@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { Block, Page } from "@plastic-editor/protocol/lib/protocol";
-import { Reference } from "./Reference";
-import { atom, useAtom } from "jotai";
-import { Editor } from "./Editor";
-import { focusAtom } from "jotai/optics";
-import { pageFamily, pageIdAtom, starsAtom } from "./Editor/adapters/memory";
+import { Block } from "@plastic-editor/protocol/lib/protocol";
 import produce from "immer";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { atom, useAtom } from "jotai";
+import { useAtomValue } from "jotai/utils";
+import React, { useCallback } from "react";
+import { Editor } from "./Editor";
+import { pageFamily, pageIdAtom, starsAtom } from "./Editor/adapters/memory";
+import { Reference } from "./Reference";
 
 // const titleTextAtom = atom((get => {
 //     console.log(get(pageFamily({id: get(pageIdAtom)})).title, 123)

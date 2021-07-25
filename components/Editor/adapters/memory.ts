@@ -1,22 +1,19 @@
-import { atom, useAtom } from "jotai";
-import {
-  atomFamily,
-  atomWithDefault,
-  atomWithStorage,
-  useAtomValue,
-  useUpdateAtom,
-} from "jotai/utils";
+import { PageEngine } from "@plastic-editor/protocol";
 import {
   Block,
   Page,
   ShallowBlock,
 } from "@plastic-editor/protocol/lib/protocol";
 import { format } from "date-fns";
-import { nanoid } from "nanoid";
 import produce from "immer";
-import { useCallback, useMemo } from "react";
-import { focusAtom } from "jotai/optics";
-import { PageEngine } from "@plastic-editor/protocol";
+import { atom, useAtom } from "jotai";
+import {
+  atomFamily,
+  atomWithDefault,
+  atomWithStorage,
+  useAtomValue,
+} from "jotai/utils";
+import { nanoid } from "nanoid";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 
 export const IDLEN = 8;
@@ -129,15 +126,10 @@ export const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
     const pages = get(pagesAtom);
     const page = get(pageFamily({ id: get(pageIdAtom) }));
     const pageEngine = new PageEngine(page);
-    const [parent, parentPath] = pageEngine.accessParent(path);
-    const idxToRemove = parent.children.findIndex((b) => b.id === blockId);
-    const idxToFocus =
-      idxToRemove > 0 ? idxToRemove - 1 : parent.children.length - 1;
-    const idToFocus = pageEngine.access([...parentPath, idxToFocus]).id;
-
+    const [closest, closetPos] = pageEngine.upClosest(path);
     pageEngine.remove(path);
     set(anchorOffsetAtom, Infinity);
-    set(editingBlockIdAtom, idToFocus);
+    set(editingBlockIdAtom, closest.id);
     set(
       pagesAtom,
       produce(pages, (draft) => {

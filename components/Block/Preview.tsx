@@ -1,15 +1,11 @@
 import clsx from "clsx";
-import React, { useCallback } from "react";
-import {
-  anchorOffsetAtom,
-  editingBlockIdAtom,
-  LINE_HEIGHT_ATOM,
-} from "../Editor/store";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { Token, tokenizer } from "../Editor/parser";
-import { blockFamily, pageIdAtom } from "../Editor/adapters/memory";
-import { nanoid } from "nanoid";
 import deepEqual from "fast-deep-equal/es6/react";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { nanoid } from "nanoid";
+import React, { useCallback } from "react";
+import { blockFamily, pageIdAtom } from "../Editor/adapters/memory";
+import { Token, tokenizer } from "../Editor/parser";
+import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
 
 export type PropsType = {
   blockId: string;

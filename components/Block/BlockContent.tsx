@@ -1,18 +1,9 @@
-import clsx from "clsx";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { blockFamily } from "../Editor/adapters/memory";
 import { useAtomValue } from "jotai/utils";
-import { useAtom } from "jotai";
-import { editingBlockIdAtom } from "../Editor/store";
+import React from "react";
+import { blockFamily } from "../Editor/adapters/memory";
 import { EditableBlock } from "../Editor/blocks/Editable";
+import { editingBlockIdAtom } from "../Editor/store";
 import { Preview } from "./Preview";
-import deepEqual from "fast-deep-equal/es6/react";
 
 export type PropsType = {
   blockId: string;

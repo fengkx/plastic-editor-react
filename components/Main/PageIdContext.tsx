@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext } from "react";
 
 export const PageIdContenxt = createContext("");
 

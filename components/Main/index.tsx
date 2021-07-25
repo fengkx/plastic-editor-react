@@ -1,6 +1,6 @@
-import { Note } from "../Note";
 import { LeftAside } from "../LeftAside";
 import { Navbar } from "../Navbar";
+import { Note } from "../Note";
 
 export function Main() {
   return (

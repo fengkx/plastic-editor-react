@@ -1,8 +1,8 @@
-import type { Rule } from "./parser";
-import { Code } from "./blocks/Code";
 import { Bold } from "./blocks/Bold";
-import { Todo } from "./blocks/Todo";
+import { Code } from "./blocks/Code";
 import { Image } from "./blocks/Image";
+import { Todo } from "./blocks/Todo";
+import type { Rule } from "./parser";
 
 export const rules: Rule[] = [
   {

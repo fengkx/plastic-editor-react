@@ -1,7 +1,6 @@
-import type { NextPage } from "next";
-import { Main } from "../components/Main";
+import { useMountEffect } from "@react-hookz/web";
 import { nanoid } from "nanoid";
-import { useMountEffect, useRerender } from "@react-hookz/web";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { IDLEN } from "../components/Editor/adapters/memory";
 const Home: NextPage = () => {

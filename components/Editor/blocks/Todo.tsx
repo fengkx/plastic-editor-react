@@ -1,9 +1,8 @@
-import React, { useCallback } from "react";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { blockFamily, pageIdAtom } from "../adapters/memory";
-import { useAtom } from "jotai";
 import produce from "immer";
-import { useRerender } from "@react-hookz/web";
+import { useAtom } from "jotai";
+import { useAtomValue } from "jotai/utils";
+import React, { useCallback } from "react";
+import { blockFamily, pageIdAtom } from "../adapters/memory";
 
 export const Todo: React.FC<{
   checked: boolean;

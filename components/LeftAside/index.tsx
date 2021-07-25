@@ -1,15 +1,9 @@
-import { ToolButton } from "./ToolButton";
-import Link from "next/link";
-import type { Page } from "@plastic-editor/protocol/lib/protocol";
-import React from "react";
 import { useAtom } from "jotai";
-import {
-  pageFamily,
-  pageIdAtom,
-  starsAtom,
-  usePage,
-} from "../Editor/adapters/memory";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import Link from "next/link";
+import React from "react";
+import { pageFamily, pageIdAtom, starsAtom } from "../Editor/adapters/memory";
+import { ToolButton } from "./ToolButton";
 
 export const LeftAside: React.FC = () => {
   return (

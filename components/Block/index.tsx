@@ -1,15 +1,14 @@
-import { editingBlockIdAtom } from "../Editor/store";
-import type { PageEngine } from "@plastic-editor/protocol";
-import type { ShallowBlock, Page } from "@plastic-editor/protocol/lib/protocol";
-import React, { useEffect } from "react";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { blockFamily, IDLEN } from "../Editor/adapters/memory";
-import { nanoid } from "nanoid";
-import clsx from "clsx";
-import { LineDirection } from "./LineDirection";
-import { BlockContent } from "./BlockContent";
+import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
 import { useMountEffect } from "@react-hookz/web";
+import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
+import { useUpdateAtom } from "jotai/utils";
+import { nanoid } from "nanoid";
+import React from "react";
+import { IDLEN } from "../Editor/adapters/memory";
+import { editingBlockIdAtom } from "../Editor/store";
+import { BlockContent } from "./BlockContent";
+import { LineDirection } from "./LineDirection";
 export type PropsType = {
   debugMode?: boolean;
   path: number[];

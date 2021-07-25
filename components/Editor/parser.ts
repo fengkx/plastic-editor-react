@@ -1,6 +1,6 @@
+import React from "react";
 import { Text } from "./blocks/Text";
 import { rules as builtinRules } from "./rules";
-import React, { createElement } from "react";
 export type Token = {
   type: string;
   position: number;

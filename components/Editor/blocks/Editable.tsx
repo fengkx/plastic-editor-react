@@ -1,39 +1,35 @@
-import { useAtom, WritableAtom } from "jotai";
-import { Block, ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
-import React, { useEffect, useRef, useState } from "react";
+import { PageEngine } from "@plastic-editor/protocol";
+import { useClickOutside, useMountEffect, useRerender } from "@react-hookz/web";
+import clsx from "clsx";
+import produce from "immer";
+import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { nanoid } from "nanoid";
+import React, { useEffect, useRef, useState } from "react";
+import tinykeys from "tinykeys";
+import { useKey } from "../../../hooks/useKey";
 import {
-  blockFamily,
   deleteBlockAtom,
   IDLEN,
   newBlockAtom,
   useBlock,
   usePage,
 } from "../adapters/memory";
-import { nanoid } from "nanoid";
-import {
-  anchorOffsetAtom,
-  editingBlockIdAtom,
-  LINE_HEIGHT_ATOM,
-} from "../store";
-import { useKey } from "../../../hooks/useKey";
-import { PageEngine } from "@plastic-editor/protocol";
-import { useClickOutside, useMountEffect, useRerender } from "@react-hookz/web";
-import tinykeys from "tinykeys";
-import produce from "immer";
-import clsx from "clsx";
+import { anchorOffsetAtom, LINE_HEIGHT_ATOM } from "../store";
 
-export type EditablePropsType = {
-  blockId: string;
-  path: number[];
-  closeEditable: () => void;
-  nextBlockId: string;
-};
+const leftBrackets = ["[", "{"];
+const rightBracketsMap = { "[": "]", "{": "}" } as const;
 
 const HotKeyWrapper = (fn: () => void) => (event: KeyboardEvent) => {
   event.stopPropagation();
   event.preventDefault();
   fn();
+};
+export type EditablePropsType = {
+  blockId: string;
+  path: number[];
+  closeEditable: () => void;
+  nextBlockId: string;
 };
 export const EditableBlock: React.FC<EditablePropsType> = ({
   blockId,
@@ -60,7 +56,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   useKey(
     "Backspace",
     (ev) => {
-      ev.preventDefault();
       ev.stopPropagation();
       if ((ev.target as HTMLTextAreaElement).value.length === 0) {
         shouldDeleteBlockRef.current = true;
@@ -79,7 +74,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   useKey(
     "Backspace",
     (ev) => {
-      ev.preventDefault();
       ev.stopPropagation();
       ev.stopImmediatePropagation();
       if (
@@ -98,6 +92,22 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       event: "keyup",
       options: { passive: true, capture: true },
     }
+  );
+
+  useKey(
+    (ev) => leftBrackets.includes(ev.key),
+    (ev) => {
+      const textArea = ev.target as HTMLTextAreaElement;
+      const [start, end] = [textArea.selectionStart, textArea.selectionEnd];
+      if (start === end) {
+        textArea!.setRangeText(rightBracketsMap[ev.key], start, end);
+      } else {
+        textArea.setSelectionRange(start, start); // jump to start and left bracket added
+        textArea.setRangeText(rightBracketsMap[ev.key], end, end);
+        setTimeout(() => textArea.setSelectionRange(start + 1, end + 1), 0);
+      }
+    },
+    { target: textareaRef, event: "keydown", options: { passive: true } }
   );
   useMountEffect(() => {
     const textArea = textareaRef.current!;

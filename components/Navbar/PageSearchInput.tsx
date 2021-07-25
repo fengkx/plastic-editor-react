@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { IDLEN, pageIdAtom, pageValuesAtom } from "../Editor/adapters/memory";
-import { nanoid } from "nanoid";
-import { useRouter } from "next/router";
 import { atom, useAtom } from "jotai";
+import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { nanoid } from "nanoid";
+import Link from "next/link";
+import React, { useState } from "react";
+import { IDLEN, pageIdAtom, pageValuesAtom } from "../Editor/adapters/memory";
 
 const searchInputAtom = atom("");
 export function PageSearchInput() {

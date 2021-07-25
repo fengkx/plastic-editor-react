@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DependencyList, RefObject, useMemo } from "react";
 import { useEventListener } from "@react-hookz/web";
+import { DependencyList, RefObject, useMemo } from "react";
 
 export type KeyPredicate = (event: KeyboardEvent) => boolean;
 export type KeyFilter =

@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo } from "react";
-import { usePageId } from "../Main/PageIdContext";
-import { atom, useAtom } from "jotai";
-import { selectAtom, useAtomValue, useUpdateAtom } from "jotai/utils";
-import { pageFamily, pageIdAtom, usePage } from "./adapters/memory";
-import { Block } from "../Block";
-import { editingBlockIdAtom } from "./store";
 import { useMountEffect } from "@react-hookz/web";
-import { useRouter } from "next/router";
 import produce from "immer";
+import { atom } from "jotai";
+import { useAtomValue } from "jotai/utils";
+import { useRouter } from "next/router";
+import React from "react";
+import { Block } from "../Block";
+import { pageFamily, pageIdAtom, usePage } from "./adapters/memory";
 
 export type PropsType = {
   editable?: boolean;
