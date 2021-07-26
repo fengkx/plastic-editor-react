@@ -15,26 +15,29 @@ import {
   useBlock,
   usePage,
 } from "../adapters/memory";
-import { anchorOffsetAtom, LINE_HEIGHT_ATOM } from "../store";
+import {
+  anchorOffsetAtom,
+  editingBlockIdAtom,
+  LINE_HEIGHT_ATOM,
+} from "../store";
 
 const leftBrackets = ["[", "{"];
 const rightBracketsMap = { "[": "]", "{": "}" } as const;
 
-const HotKeyWrapper = (fn: () => void) => (event: KeyboardEvent) => {
-  event.stopPropagation();
-  event.preventDefault();
-  fn();
-};
+const HotKeyWrapper =
+  (fn: (ev: KeyboardEvent) => void) => (event: KeyboardEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    fn(event);
+  };
 export type EditablePropsType = {
   shallowBlock: ShallowBlock;
   path: number[];
-  closeEditable: () => void;
   nextBlockId: string;
 };
 export const EditableBlock: React.FC<EditablePropsType> = ({
   shallowBlock,
   path,
-  closeEditable,
 }) => {
   const [block, setBlock] = useBlock(shallowBlock.id);
   const [nextBlockId, genNewBlockId] = useNanoid();
@@ -42,6 +45,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [anchorOffset, setAnchorOffset] = useAtom(anchorOffsetAtom);
   const addNewBlock = useUpdateAtom(newBlockAtom);
+  const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
   useKey(
     "Enter",
     (ev) => {
@@ -147,6 +151,38 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
     },
     { target: textareaRef, event: "keydown", options: { passive: true } }
   );
+  useKey("ArrowUp", (ev) => {
+    const textArea = ev.target as HTMLTextAreaElement;
+    if (
+      textArea.selectionStart === textArea.selectionEnd &&
+      textArea.selectionStart === 0
+    ) {
+      const pageEngine = new PageEngine(page);
+      const [closest] = pageEngine.upClosest(path);
+      setEditingBlockId(closest.id);
+      setAnchorOffset(Infinity);
+    }
+  });
+  useKey("ArrowDown", (ev) => {
+    const textArea = ev.target as HTMLTextAreaElement;
+    if (
+      textArea.selectionStart === textArea.value.length &&
+      textArea.selectionEnd === textArea.selectionStart
+    ) {
+      const { children } = shallowBlock;
+      if (children.length > 0) {
+        setEditingBlockId(children[0].id);
+      } else {
+        const pageEngine = new PageEngine(page);
+        const [parent] = pageEngine.accessParent(path);
+        const lastLevelIdx = path[path.length - 1];
+        if (parent.children.length - 1 >= lastLevelIdx + 1) {
+          setEditingBlockId(parent.children[lastLevelIdx + 1].id);
+        }
+      }
+      setAnchorOffset(Infinity);
+    }
+  });
   useMountEffect(() => {
     const textArea = textareaRef.current!;
     setTimeout(() => {
