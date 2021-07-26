@@ -44,7 +44,7 @@ export const Editor: React.FC<PropsType> = ({
         <Block
           key={block.id}
           path={[index]}
-          shllowBlock={block}
+          shallowBlock={block}
           pageId={page.id}
           initEditable={editable}
           initialBlockId={initialBlockId}

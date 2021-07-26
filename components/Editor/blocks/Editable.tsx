@@ -1,5 +1,6 @@
 import { PageEngine } from "@plastic-editor/protocol";
-import { useClickOutside, useMountEffect, useRerender } from "@react-hookz/web";
+import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
+import { useClickOutside, useMountEffect } from "@react-hookz/web";
 import clsx from "clsx";
 import produce from "immer";
 import { useAtom } from "jotai";
@@ -10,7 +11,7 @@ import tinykeys from "tinykeys";
 import { useKey } from "../../../hooks/useKey";
 import {
   deleteBlockAtom,
-  IDLEN,
+  ID_LEN,
   newBlockAtom,
   useBlock,
   usePage,
@@ -26,18 +27,18 @@ const HotKeyWrapper = (fn: () => void) => (event: KeyboardEvent) => {
   fn();
 };
 export type EditablePropsType = {
-  blockId: string;
+  shallowBlock: ShallowBlock;
   path: number[];
   closeEditable: () => void;
   nextBlockId: string;
 };
 export const EditableBlock: React.FC<EditablePropsType> = ({
-  blockId,
+  shallowBlock,
   path,
   closeEditable,
 }) => {
-  const [block, setBlock] = useBlock(blockId);
-  const [nextBlockId, setNextBlockId] = useState(nanoid(IDLEN));
+  const [block, setBlock] = useBlock(shallowBlock.id);
+  const [nextBlockId, setNextBlockId] = useState(nanoid(ID_LEN));
   const [page, setPage] = usePage();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [anchorOffset, setAnchorOffset] = useAtom(anchorOffsetAtom);
@@ -45,7 +46,47 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   useKey(
     "Enter",
     (ev) => {
-      addNewBlock({ newBlockId: nextBlockId, pageId: page.id, path });
+      const textArea = textareaRef.current!;
+      if (textArea.selectionStart === 0) {
+        addNewBlock({
+          newBlockId: nextBlockId,
+          pageId: page.id,
+          path,
+          op: "prepend",
+        });
+      } else {
+        const textAfterCursor = textArea.value.slice(textArea.selectionStart);
+        if (shallowBlock.children.length > 0) {
+          addNewBlock({
+            newBlockId: nextBlockId,
+            pageId: page.id,
+            path,
+            content: textAfterCursor,
+            op: "prependChild",
+          });
+          setBlock(
+            produce(block, (draft) => {
+              draft.content = textArea.value.slice(0, textArea.selectionStart);
+            })
+          );
+          setAnchorOffset(0);
+        } else {
+          addNewBlock({
+            newBlockId: nextBlockId,
+            pageId: page.id,
+            path,
+            content: textAfterCursor,
+            op: "append",
+          });
+          setBlock(
+            produce(block, (draft) => {
+              draft.content = textArea.value.slice(0, textArea.selectionStart);
+            })
+          );
+          setAnchorOffset(0);
+        }
+      }
+      // setNextBlockId(nanoid(ID_LEN))
     },
     {
       target: textareaRef,
@@ -69,7 +110,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       options: { passive: true, capture: true },
     }
   );
-  const rerender = useRerender();
   const deleteBlock = useUpdateAtom(deleteBlockAtom);
   useKey(
     "Backspace",
@@ -85,7 +125,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
         shouldDeleteBlockRef.current =
           (textareaRef.current as HTMLTextAreaElement)?.value?.length === 0;
       }
-      rerender();
     },
     {
       target: textareaRef,

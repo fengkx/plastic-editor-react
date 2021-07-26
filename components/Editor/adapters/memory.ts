@@ -1,5 +1,5 @@
 import { PageEngine } from "@plastic-editor/protocol";
-import {
+import type {
   Block,
   Page,
   ShallowBlock,
@@ -18,7 +18,7 @@ import { nanoid } from "nanoid";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import { Note } from "./types";
 
-export const IDLEN = 8;
+export const ID_LEN = 10;
 
 export const isStealAtom = atom(false);
 
@@ -41,7 +41,7 @@ const pagesAtom = atomWithStorage<Record<string, Page>>("plastic@pages", {});
 const pageDefault = (id: string): Page => ({
   id,
   type: "default" as const,
-  title: `${format(new Date(), "MMMM, dd, yyyy")} Note`,
+  title: `${format(new Date(), "MMMM, dd, yyyy")}`,
   children: [],
 });
 
@@ -60,7 +60,7 @@ export const pageFamily = atomFamily<
         }
         const defaultValue = pageDefault(id);
         if (!children) {
-          const blockId = nanoid(IDLEN);
+          const blockId = nanoid(ID_LEN);
           const block = get(blockFamily({ id: blockId, pageId: id }));
           const shallow: ShallowBlock = { id: block.id, children: [] };
           defaultValue.children = [shallow];
@@ -90,18 +90,18 @@ const blockDefault = (id: string, pageId: string): Block => ({
 });
 const blocksAtom = atomWithStorage<Record<string, Block>>("plastic@blocks", {});
 export const blockFamily = atomFamily<
-  Pick<Block, "id" | "pageId">,
+  Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
   Block,
   Block
 >(
-  ({ id, pageId }) =>
+  ({ id, pageId, content }) =>
     atom(
       (get) => {
         const cache = get(blocksAtom);
         const cachedValue = cache[id];
         if (cachedValue) return cachedValue;
         const defaultValue = blockDefault(id, pageId);
-        // cache[id] = defaultValue;
+        if (content) defaultValue.content = content;
         return defaultValue;
       },
       (get, set, update) => {
@@ -149,16 +149,34 @@ export const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
 
 export const newBlockAtom = atom<
   null,
-  { newBlockId: string; pageId: string; path: number[] }
+  {
+    newBlockId: string;
+    pageId: string;
+    path: number[];
+    content?: string;
+    op: "append" | "prepend" | "prependChild";
+  }
 >(null, (get, set, update) => {
-  const { newBlockId, pageId, path } = update;
-  const newBlock = get(blockFamily({ id: newBlockId, pageId }));
-  const shallow: ShallowBlock = { id: newBlock.id, children: [] };
+  const { newBlockId, pageId, path, content } = update;
+  const newBlockAtom = blockFamily({ id: newBlockId, pageId, content });
+  const shallow: ShallowBlock = { id: newBlockId, children: [] };
   const pageAtom = pageFamily({ id: pageId });
   const pageEngine = new PageEngine(get(pageAtom));
-  pageEngine.apendBlockAt(path, shallow);
+  switch (update.op) {
+    case "append":
+      pageEngine.apendBlockAt(path, shallow);
+      break;
+    case "prepend":
+      pageEngine.prependBlockAt(path, shallow);
+      break;
+    case "prependChild":
+      pageEngine.prependChild(path, shallow);
+  }
   set(pageAtom, pageEngine.page);
-  set(editingBlockIdAtom, newBlock.id);
+  set(editingBlockIdAtom, newBlockId);
+  if (content) {
+    set(newBlockAtom, get(newBlockAtom));
+  }
 });
 
 export const pageValuesAtom = atom((get) => {

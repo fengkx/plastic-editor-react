@@ -3,7 +3,7 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import React, { useState } from "react";
-import { IDLEN, pageIdAtom, pageValuesAtom } from "../Editor/adapters/memory";
+import { ID_LEN, pageIdAtom, pageValuesAtom } from "../Editor/adapters/memory";
 
 const searchInputAtom = atom("");
 export function PageSearchInput() {
@@ -24,7 +24,7 @@ export function PageSearchInput() {
       />
       {isShow && (
         <div className="border border-gray-100 shadow-sm absolute left-0 right 0 w-full">
-          <Link href={`/note/${nanoid(IDLEN)}?title=${searchInput}`}>
+          <Link href={`/note/${nanoid(ID_LEN)}?title=${searchInput}`}>
             <a className="w-full block hover:bg-gray-100 px-4 py-2 text-sm">
               Create {searchInput}
             </a>

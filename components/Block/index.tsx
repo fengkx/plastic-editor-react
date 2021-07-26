@@ -5,14 +5,14 @@ import deepEqual from "fast-deep-equal/es6/react";
 import { useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
 import React from "react";
-import { IDLEN } from "../Editor/adapters/memory";
+import { ID_LEN } from "../Editor/adapters/memory";
 import { editingBlockIdAtom } from "../Editor/store";
 import { BlockContent } from "./BlockContent";
 import { LineDirection } from "./LineDirection";
 export type PropsType = {
   debugMode?: boolean;
   path: number[];
-  shllowBlock: ShallowBlock;
+  shallowBlock: ShallowBlock;
   pageId: string;
   initEditable: boolean;
   initialBlockId: string;
@@ -21,52 +21,72 @@ export type PropsType = {
 const BlockImpl: React.FC<PropsType> = ({
   debugMode = false,
   path,
-  shllowBlock,
+  shallowBlock,
   pageId,
   initEditable,
 }) => {
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
   useMountEffect(() => {
     if (initEditable) {
-      setEditingBlockId(shllowBlock.id);
+      setEditingBlockId(shallowBlock.id);
     }
   });
 
   const className = clsx("flex", `block-${path.join("-")}`, "relative", "mb-2");
   return (
     <>
-      <div id={shllowBlock.id} className={className}>
+      <div id={shallowBlock.id} className={className}>
         <LineDirection />
         <BlockContent
           path={path}
-          blockId={shllowBlock.id}
           pageId={pageId}
-          nextBlockId={nanoid(IDLEN)}
+          shallowBlock={shallowBlock}
+          nextBlockId={nanoid(ID_LEN)}
         />
       </div>
-      <div className={"children flex ml-4"}>
-        <div
-          className="self-stretch bg-gray-300"
-          style={{ width: 1, marginLeft: 2 }}
+      {shallowBlock.children.length > 0 && (
+        <BlockChildren
+          shallowBlock={shallowBlock}
+          path={path}
+          pageId={pageId}
         />
-        <div className="flex-1 max-w-full">
-          {shllowBlock.children.map((shallow, idx) => {
-            return (
-              <Block
-                key={shallow.id}
-                path={[...path, idx]}
-                shllowBlock={shallow}
-                pageId={pageId}
-                initEditable={false}
-                initialBlockId={nanoid(8)}
-              />
-            );
-          })}
-        </div>
-      </div>
+      )}
     </>
   );
 };
+
+function BlockChildren({
+  shallowBlock,
+  path,
+  pageId,
+}: {
+  shallowBlock: ShallowBlock;
+  path: number[];
+  pageId: string;
+}) {
+  return (
+    <div className={"children flex ml-4"}>
+      <div
+        className="self-stretch bg-gray-300"
+        style={{ width: 1, marginLeft: 2 }}
+      />
+      <div className="flex-1 max-w-full">
+        {shallowBlock.children.map((shallow, idx) => {
+          return (
+            <Block
+              key={shallow.id}
+              path={[...path, idx]}
+              shallowBlock={shallow}
+              pageId={pageId}
+              initEditable={false}
+              initialBlockId={nanoid(8)}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export const Block = React.memo(BlockImpl, (prevProps, nextProps) =>
   deepEqual(prevProps, nextProps)
