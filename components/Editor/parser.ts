@@ -9,7 +9,6 @@ export type Token = {
     component: React.FC<any>;
     props: Record<any, any>;
   };
-  // value: string;
 };
 
 export type Rule = {

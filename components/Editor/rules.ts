@@ -2,6 +2,7 @@ import { Bold } from "./blocks/Bold";
 import { Code } from "./blocks/Code";
 import { Image } from "./blocks/Image";
 import { Todo } from "./blocks/Todo";
+import { YouTube } from "./blocks/YouTube";
 import type { Rule } from "./parser";
 
 export const rules: Rule[] = [
@@ -86,20 +87,20 @@ export const rules: Rule[] = [
       };
     },
   },
-  // {
-  //     match: /{{youtube: ([^}]+)}}/,
-  //     processor(matched, position) {
-  //         return {
-  //             type: "YOUTUBE",
-  //             // meta: {
-  //             //     component: YouTube,
-  //             //     props: {
-  //             //         link: matched[1]
-  //             //     },
-  //             // },
-  //             position,
-  //             matched,
-  //         };
-  //     }
-  // }
+  {
+    match: /{{youtube: ([^}]+)}}/,
+    processor(matched, position) {
+      return {
+        type: "YOUTUBE",
+        meta: {
+          component: YouTube,
+          props: {
+            link: matched[1],
+          },
+        },
+        position,
+        matched,
+      };
+    },
+  },
 ];
