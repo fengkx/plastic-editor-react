@@ -20,7 +20,7 @@ import { Note } from "./types";
 
 export const ID_LEN = 15;
 
-export const isStealAtom = atom(false);
+export const isStaleAtom = atom(false);
 
 type PartialPick<T, K extends keyof T> = {
   [P in K]?: T[P];
@@ -76,7 +76,7 @@ export const pageFamily = atomFamily<
           };
         });
         set(pagesAtom, newPage);
-        set(isStealAtom, true);
+        set(isStaleAtom, true);
       }
     ),
   (a, b) => a.id === b.id
@@ -113,7 +113,7 @@ export const blockFamily = atomFamily<
           };
         });
         set(blocksAtom, newBlock);
-        set(isStealAtom, true);
+        set(isStaleAtom, true);
       }
     ),
   (a, b) => a.id === b.id && a.pageId === b.pageId

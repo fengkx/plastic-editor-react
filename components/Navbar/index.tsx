@@ -1,11 +1,11 @@
 import { useAtomValue } from "jotai/utils";
 import React from "react";
-import { isStealAtom } from "../Editor/adapters/memory";
+import { isStaleAtom } from "../Editor/adapters/memory";
 import { PageSearchInput } from "./PageSearchInput";
 
 export type PropsType = {};
 export const Navbar: React.FC<PropsType> = (props) => {
-  const isSteal = useAtomValue(isStealAtom);
+  const isStale = useAtomValue(isStaleAtom);
   return (
     <nav className="flex p-4 justify-end">
       {/*<div className="flex-1">*/}
