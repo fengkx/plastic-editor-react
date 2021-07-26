@@ -18,7 +18,7 @@ import { nanoid } from "nanoid";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import { Note } from "./types";
 
-export const ID_LEN = 10;
+export const ID_LEN = 15;
 
 export const isStealAtom = atom(false);
 
