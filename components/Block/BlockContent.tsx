@@ -28,7 +28,6 @@ export const BlockContent: React.FC<PropsType> = ({
       path={path}
       shallowBlock={shallowBlock}
       nextBlockId={nextBlockId}
-      closeEditable={() => {}}
     />
   );
 };
