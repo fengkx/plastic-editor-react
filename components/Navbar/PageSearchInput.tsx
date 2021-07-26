@@ -13,7 +13,7 @@ export function PageSearchInput() {
     <div className="relative">
       <input
         onFocusCapture={() => setIsShow(true)}
-        // onBlurCapture={() => setTimeout(() => setIsShow(false), 500)}
+        onBlurCapture={() => setTimeout(() => setIsShow(false), 500)}
         value={searchInput}
         onChange={(event) => {
           setSearchInput(event.target.value);
