@@ -8,17 +8,15 @@ import { format } from "date-fns";
 import FileSaver from "file-saver";
 import produce from "immer";
 import { atom, useAtom } from "jotai";
-import {
-  atomFamily,
-  atomWithDefault,
-  atomWithStorage,
-  useAtomValue,
-} from "jotai/utils";
+import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
 import { nanoid } from "nanoid";
+import { atomWithDebouncedStorage } from "../../../atom-util/atomWithDebouncedStorage";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import { Note } from "./types";
 
 export const ID_LEN = 15;
+const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_MAX_WAIT = 2000;
 
 export const isStaleAtom = atom(false);
 
@@ -37,7 +35,13 @@ const defaultPageIdFromRoute = () => {
   }
 };
 export const pageIdAtom = atomWithDefault(defaultPageIdFromRoute);
-const pagesAtom = atomWithStorage<Record<string, Page>>("plastic@pages", {});
+const pagesAtom = atomWithDebouncedStorage<Record<string, Page>>(
+  "plastic@pages",
+  {},
+  isStaleAtom,
+  DEBOUNCE_WAIT,
+  { maxWait: DEBOUNCE_MAX_WAIT }
+);
 const pageDefault = (id: string): Page => ({
   id,
   type: "default" as const,
@@ -88,7 +92,13 @@ const blockDefault = (id: string, pageId: string): Block => ({
   content: "",
   references: [],
 });
-const blocksAtom = atomWithStorage<Record<string, Block>>("plastic@blocks", {});
+const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
+  "plastic@blocks",
+  {},
+  isStaleAtom,
+  DEBOUNCE_WAIT,
+  { maxWait: DEBOUNCE_MAX_WAIT }
+);
 export const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
   Block,
@@ -119,7 +129,13 @@ export const blockFamily = atomFamily<
   (a, b) => a.id === b.id && a.pageId === b.pageId
 );
 
-export const starsAtom = atomWithStorage<string[]>("plastic@stars", []);
+export const starsAtom = atomWithDebouncedStorage<string[]>(
+  "plastic@stars",
+  [],
+  isStaleAtom,
+  DEBOUNCE_WAIT,
+  { maxWait: DEBOUNCE_MAX_WAIT }
+);
 export const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
   null,
   (get, set, update) => {
