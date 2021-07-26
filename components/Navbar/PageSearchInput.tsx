@@ -1,16 +1,25 @@
+import produce from "immer";
 import { atom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { nanoid } from "nanoid";
 import Link from "next/link";
 import React, { useState } from "react";
-import { ID_LEN, pageIdAtom, pageValuesAtom } from "../Editor/adapters/memory";
+import { useNanoid } from "../../hooks/useNanoid";
+import {
+  pageFamily,
+  pageIdAtom,
+  pageValuesAtom,
+} from "../Editor/adapters/memory";
 
 const searchInputAtom = atom("");
 export function PageSearchInput() {
   const [searchInput, setSearchInput] = useAtom(searchInputAtom);
   const [isShow, setIsShow] = useState(false);
+  const updatePageId = useUpdateAtom(pageIdAtom);
+  const [newPageId, genNewPageId] = useNanoid();
+  const [newPage, updateNewPage] = useAtom(pageFamily({ id: newPageId }));
+
   return (
-    <div className="relative">
+    <div className="relative z-40">
       <input
         onFocusCapture={() => setIsShow(true)}
         onBlurCapture={() => setTimeout(() => setIsShow(false), 500)}
@@ -24,8 +33,20 @@ export function PageSearchInput() {
       />
       {isShow && (
         <div className="border border-gray-100 shadow-sm absolute left-0 right 0 w-full">
-          <Link href={`/note/${nanoid(ID_LEN)}?title=${searchInput}`}>
-            <a className="w-full block hover:bg-gray-100 px-4 py-2 text-sm">
+          <Link href={`/note/${newPageId}?title=${searchInput}`}>
+            <a
+              onClick={() => {
+                updatePageId(newPageId);
+                updateNewPage(
+                  produce(newPage, (draft) => {
+                    draft.title = searchInput;
+                  })
+                );
+                genNewPageId();
+                setSearchInput("");
+              }}
+              className="w-full block hover:bg-gray-100 px-4 py-2 text-sm"
+            >
               Create {searchInput}
             </a>
           </Link>

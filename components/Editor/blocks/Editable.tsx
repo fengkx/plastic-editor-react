@@ -5,13 +5,12 @@ import clsx from "clsx";
 import produce from "immer";
 import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { nanoid } from "nanoid";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
 import { useKey } from "../../../hooks/useKey";
+import { useNanoid } from "../../../hooks/useNanoid";
 import {
   deleteBlockAtom,
-  ID_LEN,
   newBlockAtom,
   useBlock,
   usePage,
@@ -38,7 +37,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   closeEditable,
 }) => {
   const [block, setBlock] = useBlock(shallowBlock.id);
-  const [nextBlockId, setNextBlockId] = useState(nanoid(ID_LEN));
+  const [nextBlockId, genNewBlockId] = useNanoid();
   const [page, setPage] = usePage();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [anchorOffset, setAnchorOffset] = useAtom(anchorOffsetAtom);
@@ -86,7 +85,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           setAnchorOffset(0);
         }
       }
-      // setNextBlockId(nanoid(ID_LEN))
+      genNewBlockId();
     },
     {
       target: textareaRef,
