@@ -6,12 +6,14 @@ import { editingBlockIdAtom } from "../Editor/store";
 import { Preview } from "./Preview";
 
 export type PropsType = {
+  className: string;
   shallowBlock: ShallowBlock;
   pageId: string;
   path: number[];
   nextBlockId: string;
 };
 export const BlockContent: React.FC<PropsType> = ({
+  className,
   shallowBlock,
   path,
   nextBlockId,
@@ -20,11 +22,12 @@ export const BlockContent: React.FC<PropsType> = ({
   const isEditing = editingBlockId === shallowBlock.id;
 
   if (!isEditing) {
-    return <Preview blockId={shallowBlock.id} />;
+    return <Preview className={className} blockId={shallowBlock.id} />;
   }
 
   return (
     <EditableBlock
+      className={className}
       path={path}
       shallowBlock={shallowBlock}
       nextBlockId={nextBlockId}

@@ -9,8 +9,9 @@ import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
 
 export type PropsType = {
   blockId: string;
+  className: string;
 };
-const PreviewImpl: React.FC<PropsType> = ({ blockId }) => {
+const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
   const setAnchorOffset = useUpdateAtom(anchorOffsetAtom);
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
   const focusCallback = useCallback(
@@ -32,21 +33,31 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId }) => {
     };
   const parsed = tokenizer(block.content, []);
   return (
-    <div
-      className={clsx("preview", "flex-1", "cursor-text")}
-      onClick={focusCallback}
-    >
-      {parsed.map((token) => {
-        return (
-          <token.meta.component
-            key={nanoid(4)}
-            {...token.meta.props}
-            blockId={blockId}
-            focusTextHelper={focusTextHelper(token)}
-          />
-        );
-      })}
-    </div>
+    <>
+      <style jsx>{`
+        .drop-over.up {
+          box-shadow: 0px -5px 0px hsl(0, 0%, 90%);
+        }
+        .drop-over.down {
+          box-shadow: 0px 5px 0px hsl(0, 0%, 90%);
+        }
+      `}</style>
+      <div
+        className={clsx("preview", "flex-1", "cursor-text", className)}
+        onClick={focusCallback}
+      >
+        {parsed.map((token) => {
+          return (
+            <token.meta.component
+              key={nanoid(4)}
+              {...token.meta.props}
+              blockId={blockId}
+              focusTextHelper={focusTextHelper(token)}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 };
 

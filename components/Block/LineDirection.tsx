@@ -1,16 +1,22 @@
 import React from "react";
-
-export const LineDirection = React.memo(
-  function () {
-    return (
-      <div className="pl-4 pr-2" style={{ marginTop: 10 }}>
+import type { useDrag } from "react-dnd";
+type TDragRef = ReturnType<typeof useDrag>[1];
+const LineDirectionImpl: React.FC<{ dragRef: TDragRef }> = ({ dragRef }) => {
+  return (
+    <div className="pl-4 pr-2" style={{ marginTop: 2 }}>
+      <div
+        ref={dragRef}
+        className="hover:bg-gray-200 rounded-full flex justify-center items-center cursor-move"
+        style={{ height: 20, width: 20 }}
+      >
         <div
-          className=" bg-gray-900 rounded-full"
-          style={{ height: 6, width: 6 }}
-        />
+          className="rounded-full bg-gray-900"
+          style={{ height: 8, width: 8 }}
+        ></div>
       </div>
-    );
-  },
-  () => true
-);
+    </div>
+  );
+};
+
+export const LineDirection = React.memo(LineDirectionImpl, () => true);
 LineDirection.displayName = "LineDirection";

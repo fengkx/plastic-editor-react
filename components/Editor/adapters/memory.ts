@@ -195,6 +195,24 @@ export const newBlockAtom = atom<
   }
 });
 
+export const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
+  null,
+  (get, set, update) => {
+    const { from, to } = update;
+    console.debug(update);
+    const pageId = get(pageIdAtom);
+    const page = get(pageFamily({ id: pageId }));
+    const pageEngine = new PageEngine(page);
+    console.debug(pageEngine.page);
+    const shallowBlock = pageEngine.access(from);
+    const [toParent] = pageEngine.accessParent(to);
+    pageEngine.remove(from);
+    toParent.children.splice(to[to.length - 1], 0, shallowBlock);
+    set(pageFamily({ id: pageId }), pageEngine.page);
+    console.debug(pageEngine.page);
+  }
+);
+
 export const pageValuesAtom = atom((get) => {
   return Object.values(get(pagesAtom));
 });

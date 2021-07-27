@@ -34,8 +34,10 @@ export type EditablePropsType = {
   shallowBlock: ShallowBlock;
   path: number[];
   nextBlockId: string;
+  className: string;
 };
 export const EditableBlock: React.FC<EditablePropsType> = ({
+  className,
   shallowBlock,
   path,
 }) => {
@@ -223,6 +225,12 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           border: none;
           resize: none;
         }
+        .drop-over.up {
+          box-shadow: 0px -5px 0px hsl(0, 0%, 90%);
+        }
+        .drop-over.down {
+          box-shadow: 0px 5px 0px hsl(0, 0%, 90%);
+        }
       `}</style>
       <textarea
         ref={textareaRef}
@@ -246,7 +254,8 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           "w-full",
           "m-0",
           "p-0",
-          "overflow-hidden"
+          "overflow-hidden",
+          className
         )}
         style={{ height: useAtomValue(LINE_HEIGHT_ATOM) }}
       />
