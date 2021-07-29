@@ -1,10 +1,10 @@
 import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
-import { useMountEffect } from "@react-hookz/web";
+import { useMountEffect, useSafeState } from "@react-hookz/web";
 import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import { ID_LEN, moveBlockAtom } from "../Editor/adapters/memory";
 import { editingBlockIdAtom } from "../Editor/store";
@@ -32,7 +32,7 @@ const BlockImpl: React.FC<PropsType> = ({
     }
   });
 
-  const [dropMoveDirection, setDropMoveDirection] = useState<
+  const [dropMoveDirection, setDropMoveDirection] = useSafeState<
     false | "up" | "down"
   >(false);
   const blockRootRef = useRef<HTMLDivElement>(null);

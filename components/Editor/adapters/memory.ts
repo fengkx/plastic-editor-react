@@ -92,7 +92,7 @@ const blockDefault = (id: string, pageId: string): Block => ({
   content: "",
   references: [],
 });
-const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
+export const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
   "plastic@blocks",
   {},
   isStaleAtom,

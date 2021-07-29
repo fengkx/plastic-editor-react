@@ -4,7 +4,7 @@ import { Note } from "../Note";
 
 export function Main() {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       <LeftAside />
       <div className="flex-1 overflow scroll">
         <Navbar />

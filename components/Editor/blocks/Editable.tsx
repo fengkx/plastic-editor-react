@@ -176,10 +176,15 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
         setEditingBlockId(children[0].id);
       } else {
         const pageEngine = new PageEngine(page);
-        const [parent] = pageEngine.accessParent(path);
-        const lastLevelIdx = path[path.length - 1];
-        if (parent.children.length - 1 >= lastLevelIdx + 1) {
-          setEditingBlockId(parent.children[lastLevelIdx + 1].id);
+        let [parent, parentPath] = pageEngine.accessParent(path);
+        while (parentPath.length >= 0) {
+          const lastLevelIdx = path[path.length - 1];
+          if (parent.children.length - 1 >= lastLevelIdx + 1) {
+            setEditingBlockId(parent.children[lastLevelIdx + 1].id);
+            break;
+          } else {
+            [parent] = pageEngine.accessParent(parentPath);
+          }
         }
       }
       setAnchorOffset(Infinity);

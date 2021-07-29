@@ -9,6 +9,8 @@
     "format": "prettier -w ."
   },
   "dependencies": {
+    "@mdx-js/loader": "^1.6.22",
+    "@next/mdx": "^11.0.1",
     "@plastic-editor/protocol": "^0.0.6",
     "@react-hookz/web": "^5.0.0",
     "clsx": "^1.1.1",
