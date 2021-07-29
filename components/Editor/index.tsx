@@ -50,7 +50,6 @@ export const Editor: React.FC<PropsType> = ({
             shallowBlock={block}
             pageId={page.id}
             initEditable={editable}
-            initialBlockId={initialBlockId}
           />
         ))}
       </DndProvider>

@@ -16,7 +16,6 @@ export type PropsType = {
   shallowBlock: ShallowBlock;
   pageId: string;
   initEditable: boolean;
-  initialBlockId: string;
   initialBlockDetectedEnd?: boolean;
 };
 const BlockImpl: React.FC<PropsType> = ({
@@ -146,7 +145,6 @@ function BlockChildren({
               shallowBlock={shallow}
               pageId={pageId}
               initEditable={false}
-              initialBlockId={nanoid(8)}
             />
           );
         })}
