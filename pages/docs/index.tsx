@@ -1,4 +1,6 @@
 import { useMountEffect } from "@react-hookz/web";
+import produce from "immer";
+import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import type { NextPage } from "next";
 import React from "react";
@@ -78,7 +80,7 @@ const pageId = "__docs__";
 export const DocIndex: NextPage = () => {
   const setPageId = useUpdateAtom(pageIdAtom);
   const setPage = useUpdateAtom(pageFamily({ id: pageId }));
-  const setBlocks = useUpdateAtom(blocksAtom);
+  const [originalBlocks, setBlocks] = useAtom(blocksAtom);
   useMountEffect(() => {
     setPageId(pageId);
     setPage({
@@ -100,7 +102,13 @@ export const DocIndex: NextPage = () => {
         { id: "0-4", children: [] },
       ],
     });
-    setBlocks(blocks);
+    setBlocks(
+      produce(originalBlocks, (draft) => {
+        Object.values(blocks).forEach((block) => {
+          draft[block.id] = block;
+        });
+      })
+    );
   });
   return <Main />;
 };
