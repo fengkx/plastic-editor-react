@@ -10,6 +10,7 @@ import produce from "immer";
 import { atom, useAtom } from "jotai";
 import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
 import { nanoid } from "nanoid";
+import { NextRouter } from "next/router";
 import { atomWithDebouncedStorage } from "../../../atom-util/atomWithDebouncedStorage";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import { Note } from "./types";
@@ -250,3 +251,16 @@ export const useBlock = (id: string) => {
   const pageId = useAtomValue(pageIdAtom);
   return useAtom(blockFamily({ id, pageId }));
 };
+
+export const gotoTodayPageAtom = atom<null, { router: NextRouter }>(
+  null,
+  (get, set, update) => {
+    const { router } = update;
+    const title = format(new Date(), "MMMM, dd, yyyy");
+    const pages = get(pageValuesAtom);
+    const id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
+    if (router) {
+      router.push(`/note/${id}`);
+    }
+  }
+);

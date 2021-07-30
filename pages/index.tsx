@@ -1,17 +1,13 @@
 import { useMountEffect } from "@react-hookz/web";
-import { format } from "date-fns";
-import { useAtomValue } from "jotai/utils";
-import { nanoid } from "nanoid";
+import { useUpdateAtom } from "jotai/utils";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ID_LEN, pageValuesAtom } from "../components/Editor/adapters/memory";
+import { gotoTodayPageAtom } from "../components/Editor/adapters/memory";
 const Home: NextPage = () => {
   const router = useRouter();
-  const pages = useAtomValue(pageValuesAtom);
+  const gotoTodayPage = useUpdateAtom(gotoTodayPageAtom);
   useMountEffect(() => {
-    const title = format(new Date(), "MMMM, dd, yyyy");
-    const id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
-    router.push(`/note/${id}`);
+    gotoTodayPage({ router });
   });
   return null;
 };

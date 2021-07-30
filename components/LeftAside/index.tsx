@@ -1,8 +1,10 @@
 import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import {
+  gotoTodayPageAtom,
   loadNotesAtom,
   pageFamily,
   pageIdAtom,
@@ -12,8 +14,10 @@ import {
 import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
 export const LeftAside: React.FC = () => {
+  const router = useRouter();
   const saveNote = useUpdateAtom(saveNotesAtom);
   const loadNote = useUpdateAtom(loadNotesAtom);
+  const gotoTodayPage = useUpdateAtom(gotoTodayPageAtom);
   const onUploadFile = useCallback(
     async (ev) => {
       const file = ev!.target!.files![0] as File;
@@ -52,7 +56,14 @@ export const LeftAside: React.FC = () => {
       </div>
       <div className="font-medium mt-4">
         <Link href="/">
-          <a className="block px-4 py-1 hover:bg-gray-200">Daily Notes</a>
+          <a
+            onClick={() => {
+              gotoTodayPage({ router });
+            }}
+            className="block px-4 py-1 hover:bg-gray-200"
+          >
+            Daily Notes
+          </a>
         </Link>
       </div>
       <div className="mt-8 font-medium">
