@@ -9,11 +9,11 @@ import {
 import { memoryAdapter } from "../components/Editor/adapters/memory";
 
 const Home: NextPage = () => {
-  const { gotoTodayPageAtom } = useAdapter();
+  const { gotoPageAtom } = useAdapter();
   const router = useRouter();
-  const gotoTodayPage = useUpdateAtom(gotoTodayPageAtom);
+  const gotoPage = useUpdateAtom(gotoPageAtom);
   useMountEffect(() => {
-    gotoTodayPage({ router });
+    gotoPage({ router, today: true });
   });
   return null;
 };

@@ -28,7 +28,6 @@ export const Editor: React.FC<PropsType> = ({
   const [page, setPage] = usePage();
   const router = useRouter();
   useMountEffect(() => {
-    console.log(router.query);
     if (router.query.title) {
       const title = Array.isArray(router.query.title)
         ? router.query.title[0]

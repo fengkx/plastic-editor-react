@@ -267,18 +267,26 @@ const useBlock = (id: string) => {
   return useAtom(blockFamily({ id, pageId }));
 };
 
-const gotoTodayPageAtom = atom<null, { router: NextRouter }>(
-  null,
-  (get, set, update) => {
-    const { router } = update;
+type todayPageUpdate =
+  | { router: NextRouter; id: string; path: string; today: false }
+  | { router: NextRouter; today: true };
+const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
+  let path: string, id: string;
+  if (update.today) {
     const title = format(new Date(), "MMMM, dd, yyyy");
     const pages = get(pageValuesAtom);
-    const id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
-    if (router) {
-      router.push(`/note/${id}`);
-    }
+    id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
+    path = `/note/${id}`;
+  } else {
+    id = update.id;
+    path = update.path;
   }
-);
+  const { router } = update;
+  if (router) {
+    router.push(path);
+    set(pageIdAtom, id);
+  }
+});
 
 export const memoryAdapter = {
   pageFamily,
@@ -294,7 +302,7 @@ export const memoryAdapter = {
   saveNotesAtom,
   loadNotesAtom,
   starsAtom,
-  gotoTodayPageAtom,
+  gotoPageAtom,
   isStaleAtom,
   pageTitleAtom,
   pageValuesAtom,

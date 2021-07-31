@@ -8,10 +8,10 @@ import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
 export const LeftAside: React.FC = () => {
   const router = useRouter();
-  const { gotoTodayPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
+  const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
   const saveNote = useUpdateAtom(saveNotesAtom);
   const loadNote = useUpdateAtom(loadNotesAtom);
-  const gotoTodayPage = useUpdateAtom(gotoTodayPageAtom);
+  const gotoPage = useUpdateAtom(gotoPageAtom);
   const onUploadFile = useCallback(
     async (ev) => {
       const file = ev!.target!.files![0] as File;
@@ -44,21 +44,25 @@ export const LeftAside: React.FC = () => {
           />
         </label>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/docs">
-          <ToolButton src="/icons/help.svg" alt="Help" />
-        </a>
+        <button>
+          <ToolButton
+            src="/icons/help.svg"
+            alt="Help"
+            onClick={() => {
+              gotoPage({ router, path: "/docs", id: "__docs__", today: false });
+            }}
+          />
+        </button>
       </div>
       <div className="font-medium mt-4">
-        <Link href="/">
-          <a
-            onClick={() => {
-              gotoTodayPage({ router });
-            }}
-            className="block px-4 py-1 hover:bg-gray-200"
-          >
-            Daily Notes
-          </a>
-        </Link>
+        <a
+          onClick={() => {
+            gotoPage({ router, today: true });
+          }}
+          className="block px-4 py-1 hover:bg-gray-200 cursor-pointer"
+        >
+          Daily Notes
+        </a>
       </div>
       <div className="mt-8 font-medium">
         <h2 className="px-4 text-gray-500 mb-2">Stared pages</h2>
