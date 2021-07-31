@@ -8,7 +8,7 @@ import {
 } from "../components/Editor/adapters/AdapterContext";
 import { memoryAdapter } from "../components/Editor/adapters/memory";
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   const { gotoPageAtom } = useAdapter();
   const router = useRouter();
   const gotoPage = useUpdateAtom(gotoPageAtom);
@@ -17,8 +17,10 @@ const Home: NextPage = () => {
   });
   return null;
 };
-export default (
-  <AdapterProvider adapter={memoryAdapter}>
-    <Home />
-  </AdapterProvider>
-);
+export default function Home() {
+  return (
+    <AdapterProvider adapter={memoryAdapter}>
+      <HomePage />
+    </AdapterProvider>
+  );
+}
