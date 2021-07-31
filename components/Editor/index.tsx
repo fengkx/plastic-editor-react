@@ -7,7 +7,7 @@ import React from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Block } from "../Block";
-import { pageFamily, pageIdAtom, usePage } from "./adapters/memory";
+import { useAdapter } from "./adapters/AdapterContext";
 
 export type PropsType = {
   editable?: boolean;
@@ -15,6 +15,7 @@ export type PropsType = {
 };
 
 export const childrenAtom = atom((get) => {
+  const { pageFamily, pageIdAtom } = useAdapter();
   const { children } = get(pageFamily({ id: get(pageIdAtom) }));
   return children;
 });
@@ -23,6 +24,7 @@ export const Editor: React.FC<PropsType> = ({
   editable = true,
   initialBlockId = "",
 }) => {
+  const { usePage } = useAdapter();
   const [page, setPage] = usePage();
   const router = useRouter();
   useMountEffect(() => {

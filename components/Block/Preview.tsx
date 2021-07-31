@@ -3,7 +3,7 @@ import deepEqual from "fast-deep-equal/es6/react";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
 import React, { useCallback } from "react";
-import { blockFamily, pageIdAtom } from "../Editor/adapters/memory";
+import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Token, tokenizer } from "../Editor/parser";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
 
@@ -12,6 +12,7 @@ export type PropsType = {
   className: string;
 };
 const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
+  const { blockFamily, pageIdAtom } = useAdapter();
   const setAnchorOffset = useUpdateAtom(anchorOffsetAtom);
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
   const focusCallback = useCallback(

@@ -4,14 +4,11 @@ import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useNanoid } from "../../hooks/useNanoid";
-import {
-  pageFamily,
-  pageIdAtom,
-  pageValuesAtom,
-} from "../Editor/adapters/memory";
+import { useAdapter } from "../Editor/adapters/AdapterContext";
 
 const searchInputAtom = atom("");
 export function PageSearchInput() {
+  const { pageFamily, pageIdAtom } = useAdapter();
   const [searchInput, setSearchInput] = useAtom(searchInputAtom);
   const [isShow, setIsShow] = useState(false);
   const updatePageId = useUpdateAtom(pageIdAtom);
@@ -58,6 +55,7 @@ export function PageSearchInput() {
 }
 
 const PageItemList: React.FC = () => {
+  const { pageValuesAtom, pageIdAtom } = useAdapter();
   const pages = useAtomValue(pageValuesAtom);
   const searchInput = useAtomValue(searchInputAtom);
   const updatePageId = useUpdateAtom(pageIdAtom);

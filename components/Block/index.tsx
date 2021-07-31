@@ -6,7 +6,8 @@ import { useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
 import React, { useRef } from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
-import { ID_LEN, moveBlockAtom } from "../Editor/adapters/memory";
+import { useAdapter } from "../Editor/adapters/AdapterContext";
+import { ID_LEN } from "../Editor/adapters/memory";
 import { editingBlockIdAtom } from "../Editor/store";
 import { BlockContent } from "./BlockContent";
 import { LineDirection } from "./LineDirection";
@@ -36,6 +37,7 @@ const BlockImpl: React.FC<PropsType> = ({
     false | "up" | "down"
   >(false);
   const blockRootRef = useRef<HTMLDivElement>(null);
+  const { moveBlockAtom } = useAdapter();
   const moveBlock = useUpdateAtom(moveBlockAtom);
   const [, drag, dragPreview] = useDrag({
     type: "BLOCK",
