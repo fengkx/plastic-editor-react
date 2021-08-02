@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai/utils";
 import React from "react";
-import { isStaleAtom } from "../Editor/adapters/memory";
+import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { PageSearchInput } from "./PageSearchInput";
 
 export const Navbar: React.FC = (props) => {
@@ -15,6 +15,7 @@ export const Navbar: React.FC = (props) => {
 };
 
 const IsStaleIndicator: React.FC = () => {
+  const { isStaleAtom } = useAdapter();
   const isStale = useAtomValue(isStaleAtom);
   return (
     <div className="flex-1">

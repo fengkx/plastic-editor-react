@@ -19,7 +19,7 @@ export const ID_LEN = 15;
 const DEBOUNCE_WAIT = 500;
 const DEBOUNCE_MAX_WAIT = 2000;
 
-export const isStaleAtom = atom(false);
+const isStaleAtom = atom(false);
 
 type PartialPick<T, K extends keyof T> = {
   [P in K]?: T[P];
@@ -35,7 +35,8 @@ const defaultPageIdFromRoute = () => {
     return "";
   }
 };
-export const pageIdAtom = atomWithDefault(defaultPageIdFromRoute);
+
+const pageIdAtom = atomWithDefault(defaultPageIdFromRoute);
 const pagesAtom = atomWithDebouncedStorage<Record<string, Page>>(
   "plastic@pages",
   {},
@@ -50,7 +51,7 @@ const pageDefault = (id: string): Page => ({
   children: [],
 });
 
-export const pageFamily = atomFamily<
+const pageFamily = atomFamily<
   Pick<Page, "id"> & PartialPick<Page, "children" | "title">,
   Page,
   Page
@@ -93,14 +94,14 @@ const blockDefault = (id: string, pageId: string): Block => ({
   content: "",
   references: [],
 });
-export const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
+const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
   "plastic@blocks",
   {},
   isStaleAtom,
   DEBOUNCE_WAIT,
   { maxWait: DEBOUNCE_MAX_WAIT }
 );
-export const blockFamily = atomFamily<
+const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
   Block,
   Block
@@ -130,14 +131,14 @@ export const blockFamily = atomFamily<
   (a, b) => a.id === b.id && a.pageId === b.pageId
 );
 
-export const starsAtom = atomWithDebouncedStorage<string[]>(
+const starsAtom = atomWithDebouncedStorage<string[]>(
   "plastic@stars",
   [],
   isStaleAtom,
   DEBOUNCE_WAIT,
   { maxWait: DEBOUNCE_MAX_WAIT }
 );
-export const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
+const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
   null,
   (get, set, update) => {
     const { path, blockId } = update;
@@ -164,7 +165,7 @@ export const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
   }
 );
 
-export const newBlockAtom = atom<
+const newBlockAtom = atom<
   null,
   {
     newBlockId: string;
@@ -196,7 +197,21 @@ export const newBlockAtom = atom<
   }
 });
 
-export const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
+const pageTitleAtom = atom(
+  (get) => {
+    const title = get(pageFamily({ id: get(pageIdAtom) })).title;
+    return title;
+  },
+  (get, set, update) => {
+    const page = get(pageFamily({ id: get(pageIdAtom) }));
+    const newPage = produce(page, (draft) => {
+      draft.title = update as string;
+    });
+    set(pageFamily({ id: get(pageIdAtom) }), newPage);
+  }
+);
+
+const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
   null,
   (get, set, update) => {
     const { from, to } = update;
@@ -214,11 +229,11 @@ export const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
   }
 );
 
-export const pageValuesAtom = atom((get) => {
+const pageValuesAtom = atom((get) => {
   return Object.values(get(pagesAtom));
 });
 
-export const saveNotesAtom = atom(null, (get) => {
+const saveNotesAtom = atom(null, (get) => {
   const pages = Object.values(get(pagesAtom));
   const blocks = get(blocksAtom);
   const stars = get(starsAtom);
@@ -232,7 +247,7 @@ export const saveNotesAtom = atom(null, (get) => {
   FileSaver.saveAs(blob, "note.json");
 });
 
-export const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
+const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
   set(
     pagesAtom,
     update.pages.reduce((acc, cur) => {
@@ -244,10 +259,10 @@ export const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
   set(starsAtom, update.stars);
 });
 
-export const usePage = () => {
+const usePage = () => {
   return useAtom(pageFamily({ id: useAtomValue(pageIdAtom) }));
 };
-export const useBlock = (id: string) => {
+const useBlock = (id: string) => {
   const pageId = useAtomValue(pageIdAtom);
   return useAtom(blockFamily({ id, pageId }));
 };
@@ -255,23 +270,40 @@ export const useBlock = (id: string) => {
 type todayPageUpdate =
   | { router: NextRouter; id: string; path: string; today: false }
   | { router: NextRouter; today: true };
-export const gotoPageAtom = atom<null, todayPageUpdate>(
-  null,
-  (get, set, update) => {
-    let path: string, id: string;
-    if (update.today) {
-      const title = format(new Date(), "MMMM, dd, yyyy");
-      const pages = get(pageValuesAtom);
-      id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
-      path = `/note/${id}`;
-    } else {
-      id = update.id;
-      path = update.path;
-    }
-    const { router } = update;
-    if (router) {
-      router.push(path);
-      set(pageIdAtom, id);
-    }
+const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
+  let path: string, id: string;
+  if (update.today) {
+    const title = format(new Date(), "MMMM, dd, yyyy");
+    const pages = get(pageValuesAtom);
+    id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
+    path = `/note/${id}`;
+  } else {
+    id = update.id;
+    path = update.path;
   }
-);
+  const { router } = update;
+  if (router) {
+    router.push(path);
+    set(pageIdAtom, id);
+  }
+});
+
+export const memoryAdapter = {
+  pageFamily,
+  pageIdAtom,
+  pagesAtom,
+  blockFamily,
+  blocksAtom,
+  moveBlockAtom,
+  deleteBlockAtom,
+  newBlockAtom,
+  usePage,
+  useBlock,
+  saveNotesAtom,
+  loadNotesAtom,
+  starsAtom,
+  gotoPageAtom,
+  isStaleAtom,
+  pageTitleAtom,
+  pageValuesAtom,
+} as const;

@@ -2,12 +2,13 @@ import produce from "immer";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import React, { useCallback } from "react";
-import { blockFamily, pageIdAtom } from "../adapters/memory";
+import { useAdapter } from "../adapters/AdapterContext";
 
 export const Todo: React.FC<{
   checked: boolean;
   blockId: string;
 }> = ({ checked, blockId }) => {
+  const { blockFamily, pageIdAtom } = useAdapter();
   const pageId = useAtomValue(pageIdAtom);
   const [block, setBlock] = useAtom(blockFamily({ id: blockId, pageId }));
   const toggle = useCallback(

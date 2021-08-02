@@ -5,10 +5,10 @@ import { useUpdateAtom } from "jotai/utils";
 import type { NextPage } from "next";
 import React from "react";
 import {
-  blocksAtom,
-  pageFamily,
-  pageIdAtom,
-} from "../../components/Editor/adapters/memory";
+  AdapterProvider,
+  useAdapter,
+} from "../../components/Editor/adapters/AdapterContext";
+import { memoryAdapter } from "../../components/Editor/adapters/memory";
 import { Main } from "../../components/Main";
 
 const blocks = {
@@ -77,7 +77,8 @@ const blocks = {
 };
 
 const pageId = "__docs__";
-export const DocIndex: NextPage = () => {
+export const DocIndexPage: NextPage = () => {
+  const { blocksAtom, pageFamily, pageIdAtom } = useAdapter();
   const setPageId = useUpdateAtom(pageIdAtom);
   const setPage = useUpdateAtom(pageFamily({ id: pageId }));
   const [originalBlocks, setBlocks] = useAtom(blocksAtom);
@@ -113,4 +114,10 @@ export const DocIndex: NextPage = () => {
   return <Main />;
 };
 
-export default DocIndex;
+export default function DocIndex() {
+  return (
+    <AdapterProvider adapter={memoryAdapter}>
+      <DocIndexPage />
+    </AdapterProvider>
+  );
+}

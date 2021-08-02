@@ -9,12 +9,7 @@ import React, { useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
 import { useKey } from "../../../hooks/useKey";
 import { useNanoid } from "../../../hooks/useNanoid";
-import {
-  deleteBlockAtom,
-  newBlockAtom,
-  useBlock,
-  usePage,
-} from "../adapters/memory";
+import { useAdapter } from "../adapters/AdapterContext";
 import {
   anchorOffsetAtom,
   editingBlockIdAtom,
@@ -41,6 +36,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   shallowBlock,
   path,
 }) => {
+  const { deleteBlockAtom, newBlockAtom, useBlock, usePage } = useAdapter();
   const [block, setBlock] = useBlock(shallowBlock.id);
   const [nextBlockId, genNewBlockId] = useNanoid();
   const [page, setPage] = usePage();
