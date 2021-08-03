@@ -178,8 +178,10 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           if (parent.children.length - 1 >= lastLevelIdx + 1) {
             setEditingBlockId(parent.children[lastLevelIdx + 1].id);
             break;
+          } else if (parentPath.length === 0) {
+            break;
           } else {
-            [parent] = pageEngine.accessParent(parentPath);
+            [parent, parentPath] = pageEngine.accessParent(parentPath);
           }
         }
       }
