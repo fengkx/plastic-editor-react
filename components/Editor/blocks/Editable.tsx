@@ -1,6 +1,10 @@
 import { PageEngine } from "@plastic-editor/protocol";
 import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
-import { useClickOutside, useMountEffect } from "@react-hookz/web";
+import {
+  useClickOutside,
+  useEventListener,
+  useMountEffect,
+} from "@react-hookz/web";
 import clsx from "clsx";
 import produce from "immer";
 import { useAtom } from "jotai";
@@ -44,9 +48,17 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   const [anchorOffset, setAnchorOffset] = useAtom(anchorOffsetAtom);
   const addNewBlock = useUpdateAtom(newBlockAtom);
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
+  const shouldCreateNewBlockRef = useRef<boolean>(true);
+  useEventListener(textareaRef, "compositionstart", () => {
+    shouldCreateNewBlockRef.current = false;
+  });
+  useEventListener(textareaRef, "compositionend", () => {
+    shouldCreateNewBlockRef.current = true;
+  });
   useKey(
     "Enter",
     (ev) => {
+      if (!shouldCreateNewBlockRef.current) return;
       const textArea = textareaRef.current!;
       if (textArea.selectionStart === 0 && textArea.value.length > 0) {
         addNewBlock({
