@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { supabase } from "../../../db";
 import { memoryAdapter } from "./memory";
 
 const AdapterContext = createContext(memoryAdapter);
@@ -6,9 +7,12 @@ const AdapterContext = createContext(memoryAdapter);
 export type PropsType = {
   adapter: typeof memoryAdapter;
 };
-export const AdapterProvider: React.FC<PropsType> = ({ adapter, children }) => {
+export const AdapterProvider: React.FC<PropsType> = ({ children }) => {
+  const session = supabase.auth.session();
+  // window.supabase = supabase;
+  const adapter = Boolean(session) ? memoryAdapter : memoryAdapter;
   return (
-    <AdapterContext.Provider value={adapter}>
+    <AdapterContext.Provider value={memoryAdapter}>
       {children}
     </AdapterContext.Provider>
   );
