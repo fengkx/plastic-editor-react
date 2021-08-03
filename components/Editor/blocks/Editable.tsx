@@ -48,7 +48,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
     "Enter",
     (ev) => {
       const textArea = textareaRef.current!;
-      if (textArea.selectionStart === 0) {
+      if (textArea.selectionStart === 0 && textArea.value.length > 0) {
         addNewBlock({
           newBlockId: nextBlockId,
           pageId: page.id,
