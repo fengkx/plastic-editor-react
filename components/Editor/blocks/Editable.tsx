@@ -3,6 +3,7 @@ import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
 import {
   useClickOutside,
   useEventListener,
+  useKeyboardEvent,
   useMountEffect,
 } from "@react-hookz/web";
 import clsx from "clsx";
@@ -11,7 +12,6 @@ import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import React, { useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
-import { useKey } from "../../../hooks/useKey";
 import { useNanoid } from "../../../hooks/useNanoid";
 import { useAdapter } from "../adapters/AdapterContext";
 import {
@@ -55,7 +55,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   useEventListener(textareaRef, "compositionend", () => {
     shouldCreateNewBlockRef.current = true;
   });
-  useKey(
+  useKeyboardEvent(
     "Enter",
     (ev) => {
       if (!shouldCreateNewBlockRef.current) return;
@@ -101,13 +101,14 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       }
       genNewBlockId();
     },
+    undefined,
     {
       target: textareaRef,
-      options: { passive: true, capture: true },
+      eventOptions: { passive: true, capture: true },
     }
   );
   const shouldDeleteBlockRef = useRef(false);
-  useKey(
+  useKeyboardEvent(
     "Backspace",
     (ev) => {
       ev.stopPropagation();
@@ -117,14 +118,15 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
         shouldDeleteBlockRef.current = false;
       }
     },
+    undefined,
     {
       target: textareaRef,
       event: "keydown",
-      options: { passive: true, capture: true },
+      eventOptions: { passive: true, capture: true },
     }
   );
   const deleteBlock = useUpdateAtom(deleteBlockAtom);
-  useKey(
+  useKeyboardEvent(
     "Backspace",
     (ev) => {
       ev.stopPropagation();
@@ -139,14 +141,15 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           (textareaRef.current as HTMLTextAreaElement)?.value?.length === 0;
       }
     },
+    undefined,
     {
       target: textareaRef,
       event: "keyup",
-      options: { passive: true, capture: true },
+      eventOptions: { passive: true, capture: true },
     }
   );
 
-  useKey(
+  useKeyboardEvent(
     (ev) => leftBrackets.includes(ev.key),
     (ev) => {
       const textArea = ev.target as HTMLTextAreaElement;
@@ -159,47 +162,58 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
         setTimeout(() => textArea.setSelectionRange(start + 1, end + 1), 0);
       }
     },
-    { target: textareaRef, event: "keydown", options: { passive: true } }
+    undefined,
+    { target: textareaRef, event: "keydown", eventOptions: { passive: true } }
   );
-  useKey("ArrowUp", (ev) => {
-    const textArea = ev.target as HTMLTextAreaElement;
-    if (
-      textArea.selectionStart === textArea.selectionEnd &&
-      textArea.selectionStart === 0
-    ) {
-      const pageEngine = new PageEngine(page);
-      const [closest] = pageEngine.upClosest(path);
-      setEditingBlockId(closest.id);
-      setAnchorOffset(Infinity);
-    }
-  });
-  useKey("ArrowDown", (ev) => {
-    const textArea = ev.target as HTMLTextAreaElement;
-    if (
-      textArea.selectionStart === textArea.value.length &&
-      textArea.selectionEnd === textArea.selectionStart
-    ) {
-      const { children } = shallowBlock;
-      if (children.length > 0) {
-        setEditingBlockId(children[0].id);
-      } else {
+  useKeyboardEvent(
+    "ArrowUp",
+    (ev) => {
+      const textArea = ev.target as HTMLTextAreaElement;
+      if (
+        textArea.selectionStart === textArea.selectionEnd &&
+        textArea.selectionStart === 0
+      ) {
         const pageEngine = new PageEngine(page);
-        let [parent, parentPath] = pageEngine.accessParent(path);
-        while (parentPath.length >= 0) {
-          const lastLevelIdx = path[path.length - 1];
-          if (parent.children.length - 1 >= lastLevelIdx + 1) {
-            setEditingBlockId(parent.children[lastLevelIdx + 1].id);
-            break;
-          } else if (parentPath.length === 0) {
-            break;
-          } else {
-            [parent, parentPath] = pageEngine.accessParent(parentPath);
+        const [closest] = pageEngine.upClosest(path);
+        setEditingBlockId(closest.id);
+        setAnchorOffset(Infinity);
+      }
+    },
+    undefined,
+    { target: textareaRef }
+  );
+  useKeyboardEvent(
+    "ArrowDown",
+    (ev) => {
+      const textArea = ev.target as HTMLTextAreaElement;
+      if (
+        textArea.selectionStart === textArea.value.length &&
+        textArea.selectionEnd === textArea.selectionStart
+      ) {
+        const { children } = shallowBlock;
+        if (children.length > 0) {
+          setEditingBlockId(children[0].id);
+        } else {
+          const pageEngine = new PageEngine(page);
+          let [parent, parentPath] = pageEngine.accessParent(path);
+          while (parentPath.length >= 0) {
+            const lastLevelIdx = path[path.length - 1];
+            if (parent.children.length - 1 >= lastLevelIdx + 1) {
+              setEditingBlockId(parent.children[lastLevelIdx + 1].id);
+              break;
+            } else if (parentPath.length === 0) {
+              break;
+            } else {
+              [parent, parentPath] = pageEngine.accessParent(parentPath);
+            }
           }
         }
+        setAnchorOffset(Infinity);
       }
-      setAnchorOffset(Infinity);
-    }
-  });
+    },
+    undefined,
+    { target: textareaRef }
+  );
   useMountEffect(() => {
     const textArea = textareaRef.current!;
     setTimeout(() => {
