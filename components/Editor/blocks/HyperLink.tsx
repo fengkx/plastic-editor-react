@@ -1,0 +1,22 @@
+import Link from "next/link";
+import React from "react";
+
+export type PropsType = {
+  url: string;
+  alt: string;
+};
+
+const stopPropagation = (ev) => {
+  ev.stopPropagation();
+};
+export const HyperLink: React.FC<PropsType> = ({ url, alt }) => (
+  <Link href={url}>
+    <a
+      className="text-blue-600 hover:underline"
+      href={url}
+      onClickCapture={stopPropagation}
+    >
+      {alt}
+    </a>
+  </Link>
+);

@@ -1,5 +1,6 @@
 import { Bold } from "./blocks/Bold";
 import { Code } from "./blocks/Code";
+import { HyperLink } from "./blocks/HyperLink";
 import { Image } from "./blocks/Image";
 import { Todo } from "./blocks/Todo";
 import { YouTube } from "./blocks/YouTube";
@@ -77,6 +78,23 @@ export const rules: Rule[] = [
         type: "IMAGE",
         meta: {
           component: Image,
+          props: {
+            alt: matched[1],
+            url: matched[2],
+          },
+        },
+        position,
+        matched,
+      };
+    },
+  },
+  {
+    match: /\[([^\]]*?)\]\(([^\)]+)\)/,
+    processor(matched: RegExpMatchArray, position: number) {
+      return {
+        type: "Link",
+        meta: {
+          component: HyperLink,
           props: {
             alt: matched[1],
             url: matched[2],
