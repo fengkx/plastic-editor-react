@@ -1,4 +1,4 @@
-import React, { ImgHTMLAttributes } from "react";
+import { ImgHTMLAttributes } from "react";
 
 type ImageAttrsType = ImgHTMLAttributes<HTMLIFrameElement>;
 export type PropsType = {

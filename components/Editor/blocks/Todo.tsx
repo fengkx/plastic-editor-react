@@ -1,7 +1,7 @@
 import produce from "immer";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useAdapter } from "../adapters/AdapterContext";
 
 export const Todo: React.FC<{

@@ -10,7 +10,7 @@ import clsx from "clsx";
 import produce from "immer";
 import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
 import { useNanoid } from "../../../hooks/useNanoid";
 import { useAdapter } from "../adapters/AdapterContext";

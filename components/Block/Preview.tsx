@@ -2,7 +2,7 @@ import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
-import React, { useCallback } from "react";
+import { memo as ReactMemo, useCallback } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Token, tokenizer } from "../Editor/parser";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
@@ -62,6 +62,6 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
   );
 };
 
-export const Preview = React.memo(PreviewImpl, (prevProps, nextProps) =>
+export const Preview = ReactMemo(PreviewImpl, (prevProps, nextProps) =>
   deepEqual(prevProps, nextProps)
 );

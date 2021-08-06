@@ -3,7 +3,6 @@ import produce from "immer";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import type { NextPage } from "next";
-import React from "react";
 import {
   AdapterProvider,
   useAdapter,

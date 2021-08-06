@@ -4,7 +4,7 @@ import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
-import React, { useRef } from "react";
+import { memo as ReactMemo, useRef } from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { ID_LEN } from "../Editor/adapters/memory";
@@ -155,6 +155,6 @@ function BlockChildren({
   );
 }
 
-export const Block = React.memo(BlockImpl, (prevProps, nextProps) =>
+export const Block = ReactMemo(BlockImpl, (prevProps, nextProps) =>
   deepEqual(prevProps, nextProps)
 );

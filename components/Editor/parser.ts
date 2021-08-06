@@ -1,4 +1,3 @@
-import React from "react";
 import { Text } from "./blocks/Text";
 import { rules as builtinRules } from "./rules";
 export type Token = {

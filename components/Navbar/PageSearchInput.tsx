@@ -2,7 +2,7 @@ import produce from "immer";
 import { atom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNanoid } from "../../hooks/useNanoid";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 

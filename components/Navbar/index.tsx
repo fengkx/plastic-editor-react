@@ -1,5 +1,4 @@
 import { useAtomValue } from "jotai/utils";
-import React from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { PageSearchInput } from "./PageSearchInput";
 

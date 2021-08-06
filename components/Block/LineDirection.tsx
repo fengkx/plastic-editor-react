@@ -1,4 +1,4 @@
-import React from "react";
+import { memo as ReactMemo } from "react";
 import type { useDrag } from "react-dnd";
 type TDragRef = ReturnType<typeof useDrag>[1];
 const LineDirectionImpl: React.FC<{ dragRef: TDragRef }> = ({ dragRef }) => {
@@ -18,5 +18,5 @@ const LineDirectionImpl: React.FC<{ dragRef: TDragRef }> = ({ dragRef }) => {
   );
 };
 
-export const LineDirection = React.memo(LineDirectionImpl, () => true);
+export const LineDirection = ReactMemo(LineDirectionImpl, () => true);
 LineDirection.displayName = "LineDirection";

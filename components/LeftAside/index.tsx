@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
