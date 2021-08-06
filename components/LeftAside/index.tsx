@@ -25,6 +25,8 @@ export const LeftAside: React.FC = () => {
     <aside className="w-64 bg-gray-100 flex-shrink-0 h-screen">
       <div className="toolbar flex space-x-2 p-4">
         <ToolButton
+          imgWidth={24}
+          imgHeight={24}
           src="/icons/download-2-line.svg"
           alt="Save button"
           onClick={saveNote}
@@ -35,12 +37,13 @@ export const LeftAside: React.FC = () => {
           id="import"
           type="file"
         />
-        <label htmlFor="import" className="cursor-pointer">
+        <label htmlFor="import" className="cursor-pointer bg-white p-1">
           {/* eslint-disable-next-line  @next/next/no-img-element */}
           <img
+            width={24}
+            height={24}
             src="/icons/folderOpen.svg"
             alt="Open File"
-            className="bg-white rounded p-1"
           />
         </label>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
@@ -48,6 +51,8 @@ export const LeftAside: React.FC = () => {
           <ToolButton
             src="/icons/help.svg"
             alt="Help"
+            imgWidth={24}
+            imgHeight={24}
             onClick={() => {
               gotoPage({ router, path: "/docs", id: "__docs__", today: false });
             }}
