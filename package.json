@@ -3,12 +3,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier -w ."
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^11.0.1",
     "@plastic-editor/protocol": "^0.0.6",
     "@react-hookz/web": "^6.1.0",
     "clsx": "^1.1.1",
@@ -20,12 +22,12 @@
     "js-cookie": "^2.2.1",
     "lodash.debounce": "^4.0.8",
     "nanoid": "^3.1.23",
-    "next": "latest",
+    "next": "^11.0.2-canary.26",
     "optics-ts": "^2.1.0",
-    "react": "^17.0.2",
+    "react": "=18.0.0-alpha-19092ac8c-20210803",
     "react-dnd": "^14.0.2",
     "react-dnd-html5-backend": "^14.0.0",
-    "react-dom": "^17.0.2",
+    "react-dom": "=18.0.0-alpha-19092ac8c-20210803",
     "tinykeys": "^1.2.0"
   },
   "devDependencies": {

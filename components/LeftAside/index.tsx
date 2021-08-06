@@ -47,17 +47,15 @@ export const LeftAside: React.FC = () => {
           />
         </label>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <button>
-          <ToolButton
-            src="/icons/help.svg"
-            alt="Help"
-            imgWidth={24}
-            imgHeight={24}
-            onClick={() => {
-              gotoPage({ router, path: "/docs", id: "__docs__", today: false });
-            }}
-          />
-        </button>
+        <ToolButton
+          src="/icons/help.svg"
+          alt="Help"
+          imgWidth={24}
+          imgHeight={24}
+          onClick={() => {
+            gotoPage({ router, path: "/docs", id: "__docs__", today: false });
+          }}
+        />
       </div>
       <div className="font-medium mt-4">
         <a
