@@ -268,8 +268,14 @@ const useBlock = (id: string) => {
 };
 
 type todayPageUpdate =
-  | { router: NextRouter; id: string; path: string; today: false }
-  | { router: NextRouter; today: true };
+  | {
+      router: NextRouter;
+      id: string;
+      path: string;
+      today: false;
+      replace?: boolean;
+    }
+  | { router: NextRouter; today: true; replace?: boolean };
 const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
   let path: string, id: string;
   if (update.today) {
@@ -283,7 +289,11 @@ const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
   }
   const { router } = update;
   if (router) {
-    router.push(path);
+    if (update.replace) {
+      router.replace(path);
+    } else {
+      router.push(path);
+    }
     set(pageIdAtom, id);
   }
 });

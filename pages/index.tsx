@@ -14,7 +14,7 @@ const HomePage: NextPage = () => {
   const router = useRouter();
   const gotoPage = useUpdateAtom(gotoPageAtom);
   useMountEffect(() => {
-    gotoPage({ router, today: true });
+    gotoPage({ router, today: true, replace: true });
   });
   return (
     <div className="grid place-items-center h-screen">
