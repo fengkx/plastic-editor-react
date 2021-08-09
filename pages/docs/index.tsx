@@ -77,7 +77,8 @@ const blocks = {
 
 const pageId = "__docs__";
 export const DocIndexPage: NextPage = () => {
-  const { blocksAtom, pageFamily, pageIdAtom } = useAdapter();
+  const { blocksAtom, pageFamily, pageIdAtom } =
+    useAdapter<typeof memoryAdapter>();
   const setPageId = useUpdateAtom(pageIdAtom);
   const setPage = useUpdateAtom(pageFamily({ id: pageId }));
   const [originalBlocks, setBlocks] = useAtom(blocksAtom);

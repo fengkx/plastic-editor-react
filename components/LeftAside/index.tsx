@@ -2,10 +2,11 @@ import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, Suspense } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
+import { Loading } from "../Loading";
 export const LeftAside: React.FC = () => {
   const router = useRouter();
   const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
@@ -69,7 +70,9 @@ export const LeftAside: React.FC = () => {
       </div>
       <div className="mt-8 font-medium">
         <h2 className="px-4 text-gray-500 mb-2">Stared pages</h2>
-        <StarPageList />
+        <Suspense fallback={<Loading />}>
+          <StarPageList />
+        </Suspense>
       </div>
     </aside>
   );
@@ -77,7 +80,7 @@ export const LeftAside: React.FC = () => {
 
 function StarPageList() {
   const { starsAtom } = useAdapter();
-  const [stars] = useAtom(starsAtom);
+  const stars = useAtomValue(starsAtom);
   return (
     <div>
       {stars.map((pageId) => {

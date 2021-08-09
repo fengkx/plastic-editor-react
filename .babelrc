@@ -1,0 +1,11 @@
+{
+  "presets": [
+    [
+      "next/babel",
+      {
+        "targets": ["chrome 92"]
+      }
+    ]
+  ],
+  "plugins": []
+}

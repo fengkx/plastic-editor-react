@@ -13,17 +13,13 @@ import { nanoid } from "nanoid";
 import { NextRouter } from "next/router";
 import { atomWithDebouncedStorage } from "../../../atom-util/atomWithDebouncedStorage";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
-import { Note } from "./types";
+import { Note, PartialPick } from "./types";
 
 export const ID_LEN = 15;
 const DEBOUNCE_WAIT = 500;
 const DEBOUNCE_MAX_WAIT = 2000;
 
 const isStaleAtom = atom(false);
-
-type PartialPick<T, K extends keyof T> = {
-  [P in K]?: T[P];
-};
 
 const defaultPageIdFromRoute = () => {
   if (process.browser) {
@@ -44,7 +40,7 @@ const pagesAtom = atomWithDebouncedStorage<Record<string, Page>>(
   DEBOUNCE_WAIT,
   { maxWait: DEBOUNCE_MAX_WAIT }
 );
-const pageDefault = (id: string): Page => ({
+export const pageDefault = (id: string): Page => ({
   id,
   type: "default" as const,
   title: `${format(new Date(), "MMMM, dd, yyyy")}`,
@@ -59,6 +55,7 @@ const pageFamily = atomFamily<
   ({ id, children, title }) =>
     atom(
       (get) => {
+        debugger;
         const cache = get(pagesAtom);
         const cachedValue = cache[id];
         if (cachedValue) {
@@ -70,6 +67,9 @@ const pageFamily = atomFamily<
           const block = get(blockFamily({ id: blockId, pageId: id }));
           const shallow: ShallowBlock = { id: block.id, children: [] };
           defaultValue.children = [shallow];
+        }
+        if (title) {
+          defaultValue.title = title;
         }
         return defaultValue;
       },
@@ -88,7 +88,7 @@ const pageFamily = atomFamily<
   (a, b) => a.id === b.id
 );
 
-const blockDefault = (id: string, pageId: string): Block => ({
+export const blockDefault = (id: string, pageId: string): Block => ({
   id,
   pageId,
   content: "",
@@ -197,19 +197,20 @@ const newBlockAtom = atom<
   }
 });
 
-const pageTitleAtom = atom(
-  (get) => {
-    const title = get(pageFamily({ id: get(pageIdAtom) })).title;
-    return title;
-  },
-  (get, set, update) => {
-    const page = get(pageFamily({ id: get(pageIdAtom) }));
-    const newPage = produce(page, (draft) => {
-      draft.title = update as string;
-    });
-    set(pageFamily({ id: get(pageIdAtom) }), newPage);
+const newPageAtom = atom<
+  null,
+  {
+    newPageId: string;
+    title?: string;
+    children?: ShallowBlock[];
+    goto?: boolean;
   }
-);
+>(null, (get, set, update) => {
+  const { newPageId, title, children, goto } = update;
+  debugger;
+  const newPageAtom = pageFamily({ id: newPageId, title, children });
+  set(newPageAtom, get(newPageAtom));
+});
 
 const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
   null,
@@ -307,6 +308,7 @@ export const memoryAdapter = {
   moveBlockAtom,
   deleteBlockAtom,
   newBlockAtom,
+  newPageAtom,
   usePage,
   useBlock,
   saveNotesAtom,
@@ -314,6 +316,5 @@ export const memoryAdapter = {
   starsAtom,
   gotoPageAtom,
   isStaleAtom,
-  pageTitleAtom,
   pageValuesAtom,
 } as const;

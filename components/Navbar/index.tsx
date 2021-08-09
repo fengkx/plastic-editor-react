@@ -1,13 +1,17 @@
+import { Suspense } from "react";
 import { useAtomValue } from "jotai/utils";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { PageSearchInput } from "./PageSearchInput";
+import { Loading } from "../Loading";
 
 export const Navbar: React.FC = (props) => {
   return (
     <nav className="flex p-4 justify-end">
       <IsStaleIndicator />
       <div className="w-64">
-        <PageSearchInput />
+        <Suspense fallback={"Loading"}>
+          <PageSearchInput />
+        </Suspense>
       </div>
     </nav>
   );

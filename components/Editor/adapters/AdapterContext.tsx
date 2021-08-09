@@ -1,23 +1,27 @@
 import { createContext, useContext } from "react";
 import { supabase } from "../../../db";
 import { memoryAdapter } from "./memory";
+import { supbaseAdapter } from "./supabase";
 
-const AdapterContext = createContext(memoryAdapter);
+type IAdapter = typeof memoryAdapter | typeof supbaseAdapter;
+const AdapterContext = createContext<IAdapter>(memoryAdapter);
 
 export type PropsType = {
-  adapter: typeof memoryAdapter;
+  adapter?: IAdapter;
 };
-export const AdapterProvider: React.FC<PropsType> = ({ children }) => {
-  const session = supabase.auth.session();
-  // window.supabase = supabase;
-  const adapter = Boolean(session) ? memoryAdapter : memoryAdapter;
+export const AdapterProvider: React.FC<PropsType> = ({ children, adapter }) => {
+  if (!adapter) {
+    const session = supabase.auth.session();
+    console.log(session, Boolean(session));
+    adapter = Boolean(session) ? supbaseAdapter : memoryAdapter;
+  }
   return (
-    <AdapterContext.Provider value={memoryAdapter}>
+    <AdapterContext.Provider value={adapter}>
       {children}
     </AdapterContext.Provider>
   );
 };
 
-export function useAdapter() {
-  return useContext(AdapterContext);
+export function useAdapter<T extends IAdapter>() {
+  return useContext(AdapterContext) as T;
 }

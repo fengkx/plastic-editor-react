@@ -24,7 +24,7 @@ const HomePage: NextPage = () => {
 };
 export default function Home() {
   return (
-    <AdapterProvider adapter={memoryAdapter}>
+    <AdapterProvider>
       <HomePage />
     </AdapterProvider>
   );

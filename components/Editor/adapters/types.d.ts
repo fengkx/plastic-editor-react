@@ -4,6 +4,10 @@ import type {
   ShallowBlock,
 } from "@plastic-editor/protocol/lib/protocol";
 
+export type PartialPick<T, K extends keyof T> = {
+  [P in K]?: T[P];
+};
+
 export type Note = {
   pages: Page[];
   blocks: { [key: string]: Block };
