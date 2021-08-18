@@ -2,23 +2,26 @@ import type { PrimitiveAtom, SetStateAction, WritableAtom } from "jotai";
 import { atom } from "jotai";
 import _debounce from "lodash.debounce";
 
-type Unsubscribe = () => void;
+export type Unsubscribe = () => void;
 
-type Storage<Value> = {
+export type Storage<Value> = {
   getItem: (key: string) => Value | Promise<Value>;
   setItem: (key: string, newValue: Value) => void | Promise<void>;
   delayInit?: boolean;
   subscribe?: (key: string, callback: (value: Value) => void) => Unsubscribe;
 };
 
-type StringStorage = {
-  getItem: (key: string) => string | null | Promise<string | null>;
-  setItem: (key: string, newValue: string) => void | Promise<void>;
+export type SimpleStorage<Value> = {
+  getItem: (key: string) => Value | null | Promise<Value | null>;
+  setItem: (key: string, newValue: Value) => void | Promise<void>;
+  delayInit?: boolean;
 };
 
-export const createJSONStorage = (
+export type StringStorage = SimpleStorage<string>;
+
+export const createJSONStorage = <T extends any>(
   getStringStorage: () => StringStorage
-): Storage<unknown> => ({
+): Storage<T> => ({
   getItem: (key) => {
     const value = getStringStorage().getItem(key);
     if (value instanceof Promise) {
@@ -27,7 +30,8 @@ export const createJSONStorage = (
     return JSON.parse(value || "");
   },
   setItem: (key, newValue) => {
-    getStringStorage().setItem(key, JSON.stringify(newValue));
+    // @ts-ignore
+    getStringStorage().setItem(key, JSON. stringify(newValue));
   },
 });
 
@@ -39,13 +43,16 @@ export function atomWithDebouncedStorage<Value>(
   isStaleAtom: WritableAtom<boolean, boolean>,
   wait: number,
   debounceOptions: Parameters<typeof _debounce>[2],
-  storage: Storage<Value> = defaultStorage as Storage<Value>
+  storage: Storage<Value> = defaultStorage as unknown as Storage<Value>,
+  fallback: boolean = false
 ): PrimitiveAtom<Value> {
   const getInitialValue = () => {
     try {
       const value = storage.getItem(key);
       if (value instanceof Promise) {
-        return value.catch(() => initialValue);
+        return value
+            .then(v => fallback ? (v ?? initialValue) : v)
+            .catch(() => initialValue);
       }
       return value;
     } catch {
