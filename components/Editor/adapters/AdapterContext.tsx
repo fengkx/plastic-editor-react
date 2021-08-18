@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { supabase } from "../../../db";
+import { hasSupabase, supabase } from "../../../db";
 import { memoryAdapter } from "./memory";
 import { supbaseAdapter } from "./supabase";
 
@@ -11,9 +11,13 @@ export type PropsType = {
 };
 export const AdapterProvider: React.FC<PropsType> = ({ children, adapter }) => {
   if (!adapter) {
-    const session = supabase.auth.session();
-    console.log(session, Boolean(session));
-    adapter = Boolean(session) ? supbaseAdapter : memoryAdapter;
+    if (hasSupabase) {
+      const session = supabase.auth.session();
+      console.log(session, Boolean(session));
+      adapter = Boolean(session) ? supbaseAdapter : memoryAdapter;
+    } else {
+      adapter = memoryAdapter;
+    }
   }
   return (
     <AdapterContext.Provider value={adapter}>

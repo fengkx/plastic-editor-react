@@ -2,7 +2,8 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
-import { supabase } from "../../db";
+import NotFound from "../../components/404";
+import { hasSupabase, supabase } from "../../db";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -99,4 +100,4 @@ const LoginPage: NextPage = () => {
   );
 };
 
-export default LoginPage;
+export default hasSupabase ? LoginPage : NotFound;

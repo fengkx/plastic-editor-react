@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { useCallback, useState } from "react";
-import { supabase } from "../../db";
+import NotFound from "../../components/404";
+import { supabase, hasSupabase } from "../../db";
 
 const SignupPage: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -90,4 +91,4 @@ const SignupPage: NextPage = () => {
     </div>
   );
 };
-export default SignupPage;
+export default hasSupabase ? SignupPage : NotFound;

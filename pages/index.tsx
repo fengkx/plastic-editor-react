@@ -6,7 +6,6 @@ import {
   AdapterProvider,
   useAdapter,
 } from "../components/Editor/adapters/AdapterContext";
-import { memoryAdapter } from "../components/Editor/adapters/memory";
 import { Loading } from "../components/Loading";
 
 const HomePage: NextPage = () => {

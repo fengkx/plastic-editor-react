@@ -5,6 +5,6 @@ module.exports = withBundleAnalyzer({
   experimental: {
     reactRoot: true,
     reactMode: "conurrent",
-    esmExternals: "loose",
+    esmExternals: "true",
   },
 });
