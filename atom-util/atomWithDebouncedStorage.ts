@@ -14,14 +14,13 @@ export type Storage<Value> = {
 export type SimpleStorage<Value> = {
   getItem: (key: string) => Value | null | Promise<Value | null>;
   setItem: (key: string, newValue: Value) => void | Promise<void>;
-  delayInit?: boolean;
 };
 
 export type StringStorage = SimpleStorage<string>;
 
 export const createJSONStorage = <T extends any>(
   getStringStorage: () => StringStorage
-): Storage<T> => ({
+): Storage<unknown> => ({
   getItem: (key) => {
     const value = getStringStorage().getItem(key);
     if (value instanceof Promise) {
@@ -31,7 +30,7 @@ export const createJSONStorage = <T extends any>(
   },
   setItem: (key, newValue) => {
     // @ts-ignore
-    getStringStorage().setItem(key, JSON. stringify(newValue));
+    getStringStorage().setItem(key, JSON.stringify(newValue));
   },
 });
 
@@ -43,7 +42,7 @@ export function atomWithDebouncedStorage<Value>(
   isStaleAtom: WritableAtom<boolean, boolean>,
   wait: number,
   debounceOptions: Parameters<typeof _debounce>[2],
-  storage: Storage<Value> = defaultStorage as unknown as Storage<Value>,
+  storage: Storage<Value> = defaultStorage as Storage<Value>,
   fallback: boolean = false
 ): PrimitiveAtom<Value> {
   const getInitialValue = () => {
@@ -51,8 +50,8 @@ export function atomWithDebouncedStorage<Value>(
       const value = storage.getItem(key);
       if (value instanceof Promise) {
         return value
-            .then(v => fallback ? (v ?? initialValue) : v)
-            .catch(() => initialValue);
+          .then((v) => (fallback ? v ?? initialValue : v))
+          .catch(() => initialValue);
       }
       return value;
     } catch {

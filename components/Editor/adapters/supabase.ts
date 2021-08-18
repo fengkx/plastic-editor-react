@@ -10,10 +10,10 @@ import { Note, PartialPick } from "./types";
 import { supabase } from "../../../db";
 import { definitions } from "../../../types/supabase";
 import {
-    atomWithDebouncedStorage,
-    createJSONStorage,
-    SimpleStorage,
-    Storage
+  atomWithDebouncedStorage,
+  createJSONStorage,
+  SimpleStorage,
+  Storage,
 } from "../../../atom-util/atomWithDebouncedStorage";
 import { nanoid } from "nanoid";
 import { PageEngine } from "@plastic-editor/protocol";
@@ -30,61 +30,62 @@ export type TSupabaseAdapter = Omit<
 const { isStaleAtom, gotoPageAtom, pageIdAtom } = memoryAdapter;
 
 const blockStoarge: SimpleStorage<Block> = {
-    getItem: async (id) => {
-        const resp = await supabase
-            .from<definitions["blocks"]>("blocks")
-            .select()
-            .eq("block_id", id);
-        const dbValue = resp.data?.[0];
-        return dbValue?.content ?? null;
-    },
-    setItem: async (id, value) => {
-        await supabase.from<definitions["blocks"]>("blocks").upsert({
-            block_id: id,
-            content: value,
-        }, {onConflict: 'block_id'});
-        return;
-    },
-    delayInit: true
-}
+  getItem: async (id) => {
+    const resp = await supabase
+      .from<definitions["blocks"]>("blocks")
+      .select()
+      .eq("block_id", id);
+    const dbValue = resp.data?.[0];
+    return dbValue?.content ?? null;
+  },
+  setItem: async (id, value) => {
+    await supabase.from<definitions["blocks"]>("blocks").upsert(
+      {
+        block_id: id,
+        content: value,
+      },
+      { onConflict: "block_id" }
+    );
+    return;
+  },
+};
 
-const pageStorage : SimpleStorage<Page & definitions['page_metas']> = {
-    getItem: async (id) => {
-        const resp = await supabase
-            .from<definitions["page_content"]>("page_content")
-            .select()
-            .eq("page_id", id);
-        debugger
-        const dbValue = resp.data?.[0];
-        return dbValue?.content ?? null;
-    },
-    setItem: async (id, value) => {
-        const  {is_public = false, is_writable = false} = value;
-        await supabase.from<definitions["page_metas"]>("page_metas").upsert(
-            {
-                page_id: id,
-                is_public,
-                is_writable,
-            },
-            { onConflict: "page_id" }
-        );
-        const page: Page = {
-            children: value.children,
-            title: value.title,
-            id: id
-
-        }
-        await supabase
-            .from<definitions["page_content"]>("page_content")
-            .upsert(
-                {
-                    page_id: id,
-                    content: page,
-                },
-                { onConflict: "page_id" }
-            );
-        return
-    }
+const pageStorage: SimpleStorage<
+  Omit<definitions["page_metas"], "owner_id" | "id"> & Page
+> = {
+  getItem: async (id) => {
+    const resp = await supabase
+      .from<definitions["page_content"]>("page_content")
+      .select()
+      .eq("page_id", id);
+    debugger;
+    const dbValue = resp.data?.[0];
+    return dbValue?.content ?? null;
+  },
+  setItem: async (id, value) => {
+    const { is_public = false, is_writable = false } = value;
+    await supabase.from<definitions["page_metas"]>("page_metas").upsert(
+      {
+        page_id: id,
+        is_public,
+        is_writable,
+      },
+      { onConflict: "page_id" }
+    );
+    const page: Page = {
+      children: value.children,
+      title: value.title,
+      id: id,
+    };
+    await supabase.from<definitions["page_content"]>("page_content").upsert(
+      {
+        page_id: id,
+        content: page,
+      },
+      { onConflict: "page_id" }
+    );
+    return;
+  },
 };
 const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
@@ -92,9 +93,17 @@ const blockFamily = atomFamily<
   Block
 >(
   ({ id, pageId, content }) => {
-      const defaultValue = blockDefault(id, pageId);
-      if (content) defaultValue.content = content;
-      return atomWithDebouncedStorage<Block>(id, defaultValue, isStaleAtom, DEBOUNCE_WAIT, {maxWait: DEBOUNCE_MAX_WAIT}, blockStoarge, true)
+    const defaultValue = blockDefault(id, pageId);
+    if (content) defaultValue.content = content;
+    return atomWithDebouncedStorage<Block>(
+      id,
+      defaultValue,
+      isStaleAtom,
+      DEBOUNCE_WAIT,
+      { maxWait: DEBOUNCE_MAX_WAIT },
+      blockStoarge as Storage<Block>,
+      true
+    );
   },
   (a, b) => a.id === b.id && a.pageId === b.pageId
 );
@@ -105,18 +114,26 @@ const pageFamily = atomFamily<
   Page
 >(
   ({ id, children, title }) => {
-      const defaultValue = pageDefault(id);
-      if (!children) {
-          const shallow: ShallowBlock = { id, children: [] };
-          defaultValue.children = [shallow];
-      }
-      if (title) {
-          defaultValue.title = title;
-      }
+    const defaultValue = pageDefault(id);
+    if (!children) {
+      const shallow: ShallowBlock = { id, children: [] };
+      defaultValue.children = [shallow];
+    }
+    if (title) {
+      defaultValue.title = title;
+    }
 
-      return atomWithDebouncedStorage<Page>(id, defaultValue, isStaleAtom, DEBOUNCE_WAIT, {maxWait: DEBOUNCE_MAX_WAIT}, pageStorage, true)
+    return atomWithDebouncedStorage<Page>(
+      id,
+      defaultValue,
+      isStaleAtom,
+      DEBOUNCE_WAIT,
+      { maxWait: DEBOUNCE_MAX_WAIT },
+      pageStorage as Storage<Page>,
+      true
+    );
   },
-(a, b) => a.id === b.id
+  (a, b) => a.id === b.id
 );
 
 const starsAtom = atomWithDebouncedStorage<string[]>(
@@ -127,13 +144,13 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
   { maxWait: DEBOUNCE_MAX_WAIT },
   {
     async getItem(key) {
-      const resp = await supabase.from<definitions['stars']>("stars").select();
+      const resp = await supabase.from<definitions["stars"]>("stars").select();
       const dbValue = resp.data?.[0]?.content ?? [];
       if (dbValue) dbValue;
       return [];
     },
     async setItem(key, newVal) {
-      const resp = await supabase.from<definitions['stars']>("stars").upsert({
+      const resp = await supabase.from<definitions["stars"]>("stars").upsert({
         content: newVal,
       });
     },
@@ -222,7 +239,7 @@ const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
     const writeDb = async () => {
       await supabase.from<definitions["page_content"]>("page_content").upsert({
         page_id: page.id,
-        content: JSON.stringify(pageEngine.page),
+        content: pageEngine.page,
       });
       await supabase
         .from<definitions["blocks"]>("blocks")
@@ -245,7 +262,7 @@ const pageValuesAtom = atom(async (get) => {
   const resp = await supabase
     .from<definitions["page_content"]>("page_content")
     .select();
-  return resp.data?.map((item) => JSON.parse(item.content) as Page) ?? [];
+  return resp.data?.map((item) => item.content) ?? [];
 });
 
 const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
@@ -256,7 +273,7 @@ const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
     await supabase.from<definitions["page_content"]>("page_content").upsert(
       update.pages.map((p) => ({
         page_id: p.id,
-        content: JSON.stringify(p),
+        content: p,
       }))
     );
   };
@@ -273,16 +290,14 @@ const saveNotesAtom = atom(null, (get) => {
     let blocksResp = await supabase
       .from<definitions["blocks"]>("blocks")
       .select();
-    const pages = (pagesResp.data ?? []).map(
-      (p) => JSON.parse(p.content) as Page
-    );
+    const pages = (pagesResp.data ?? []).map((p) => p.content);
     const blocks = (blocksResp.data ?? [])
-      .map((p) => JSON.parse(p.content) as Block)
+      .map((b) => b.content)
       .reduce((acc, cur) => {
         acc[cur.id] = cur;
         return acc;
       }, {});
-    const stars = JSON.parse(starsResp.data?.[0].content ?? "[]");
+    const stars = starsResp.data?.[0].content ?? [];
 
     const note: Note = {
       pages,
