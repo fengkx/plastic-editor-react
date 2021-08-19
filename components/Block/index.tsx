@@ -102,7 +102,7 @@ const BlockImpl: React.FC<PropsType> = ({
     <>
       <div id={shallowBlock.id} className={className} ref={blockRootRef}>
         <LineDirection dragRef={drag} />
-        <Suspense fallback={DotFlashing}>
+        <Suspense fallback={<DotFlashing />}>
           <BlockContent
             className={clsx({
               "drop-over": isOver,

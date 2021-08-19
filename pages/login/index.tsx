@@ -19,7 +19,7 @@ const LoginPage: NextPage = () => {
       ev.preventDefault();
       const { error } = await supabase.auth.signIn({ email, password });
       if (error) throw error;
-      router.push("/");
+      await router.push("/");
     },
     [email, password, router]
   );
