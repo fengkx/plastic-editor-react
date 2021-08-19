@@ -1,10 +1,11 @@
 import clsx from "clsx";
+import "text-spinners/spinners.css";
 
 type PropsType = {
   style?: React.CSSProperties;
   className?: string;
 };
-export const Loading: React.FC<PropsType> = ({ style, className }) => {
+export const BigCircleLoading: React.FC<PropsType> = ({ style, className }) => {
   return (
     <>
       <style jsx>{`
@@ -51,4 +52,8 @@ export const Loading: React.FC<PropsType> = ({ style, className }) => {
       <div className={clsx("loader", className)} style={style} />
     </>
   );
+};
+
+export const DotFlashing: React.FC<PropsType> = ({ style, className }) => {
+  return <div className={clsx("loading", className)} style={style}></div>;
 };

@@ -31,6 +31,7 @@ specifiers:
   react-dnd-html5-backend: ^14.0.1
   react-dom: ^18.0.0-alpha-ed6c091fe-20210701
   tailwindcss: ^2.2.7
+  text-spinners: ^1.0.5
   tinykeys: ^1.2.0
   typescript: ^4.3.5
   yorkie: ^2.0.0
@@ -55,6 +56,7 @@ dependencies:
   react-dnd: 14.0.3_1b20ff3994aecdcd32716d411a7ccd86
   react-dnd-html5-backend: 14.0.1
   react-dom: 18.0.0-alpha-ed6c091fe-20210701_2809a9cb067487d57565c7f65c527eaf
+  text-spinners: 1.0.5
   tinykeys: 1.2.0
 
 devDependencies:
@@ -5211,6 +5213,10 @@ packages:
     transitivePeerDependencies:
       - ts-node
     dev: true
+
+  /text-spinners/1.0.5:
+    resolution: { integrity: sha1-gBgl4GQ8U/86s9mQ4ek93vl8uAU= }
+    dev: false
 
   /text-table/0.2.0:
     resolution: { integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ= }

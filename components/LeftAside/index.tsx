@@ -6,7 +6,7 @@ import { useCallback, Suspense } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
-import { Loading } from "../Loading";
+import { BigCircleLoading, DotFlashing } from "../Loading";
 export const LeftAside: React.FC = () => {
   const router = useRouter();
   const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
@@ -70,7 +70,9 @@ export const LeftAside: React.FC = () => {
       </div>
       <div className="mt-8 font-medium">
         <h2 className="px-4 text-gray-500 mb-2">Stared pages</h2>
-        <Suspense fallback={<Loading />}>
+        <Suspense
+          fallback={<DotFlashing className="block px-4 py-1 text-lg" />}
+        >
           <StarPageList />
         </Suspense>
       </div>

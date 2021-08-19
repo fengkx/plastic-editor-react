@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
 import { useMountEffect, useSafeState } from "@react-hookz/web";
 import clsx from "clsx";
@@ -11,6 +12,7 @@ import { ID_LEN } from "../Editor/adapters/memory";
 import { editingBlockIdAtom } from "../Editor/store";
 import { BlockContent } from "./BlockContent";
 import { LineDirection } from "./LineDirection";
+import { DotFlashing } from "../Loading";
 export type PropsType = {
   debugMode?: boolean;
   path: number[];
@@ -100,17 +102,19 @@ const BlockImpl: React.FC<PropsType> = ({
     <>
       <div id={shallowBlock.id} className={className} ref={blockRootRef}>
         <LineDirection dragRef={drag} />
-        <BlockContent
-          className={clsx({
-            "drop-over": isOver,
-            up: dropMoveDirection === "up",
-            down: dropMoveDirection === "down",
-          })}
-          path={path}
-          pageId={pageId}
-          shallowBlock={shallowBlock}
-          nextBlockId={nanoid(ID_LEN)}
-        />
+        <Suspense fallback={DotFlashing}>
+          <BlockContent
+            className={clsx({
+              "drop-over": isOver,
+              up: dropMoveDirection === "up",
+              down: dropMoveDirection === "down",
+            })}
+            path={path}
+            pageId={pageId}
+            shallowBlock={shallowBlock}
+            nextBlockId={nanoid(ID_LEN)}
+          />
+        </Suspense>
       </div>
       {shallowBlock.children.length > 0 && (
         <BlockChildren

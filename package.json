@@ -29,6 +29,7 @@
     "react-dnd": "^14.0.3",
     "react-dnd-html5-backend": "^14.0.1",
     "react-dom": "^18.0.0-alpha-ed6c091fe-20210701",
+    "text-spinners": "^1.0.5",
     "tinykeys": "^1.2.0"
   },
   "devDependencies": {

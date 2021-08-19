@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { useAtomValue } from "jotai/utils";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { PageSearchInput } from "./PageSearchInput";
-import { Loading } from "../Loading";
+import { BigCircleLoading } from "../Loading";
 
 export const Navbar: React.FC = (props) => {
   return (

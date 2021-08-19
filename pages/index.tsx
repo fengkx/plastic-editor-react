@@ -6,7 +6,7 @@ import {
   AdapterProvider,
   useAdapter,
 } from "../components/Editor/adapters/AdapterContext";
-import { Loading } from "../components/Loading";
+import { BigCircleLoading } from "../components/Loading";
 
 const HomePage: NextPage = () => {
   const { gotoPageAtom } = useAdapter();
@@ -17,7 +17,7 @@ const HomePage: NextPage = () => {
   });
   return (
     <div className="grid place-items-center h-screen">
-      <Loading className=" w-64 h-64" />
+      <BigCircleLoading className=" w-64 h-64" />
     </div>
   );
 };
