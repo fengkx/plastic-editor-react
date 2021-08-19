@@ -20,8 +20,8 @@ import { PageEngine } from "@plastic-editor/protocol";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import FileSaver from "file-saver";
 
-const DEBOUNCE_WAIT = 5000;
-const DEBOUNCE_MAX_WAIT = 10000;
+const DEBOUNCE_WAIT = 500;
+const DEBOUNCE_MAX_WAIT = 1500;
 
 export type TSupabaseAdapter = Omit<
   typeof memoryAdapter,
