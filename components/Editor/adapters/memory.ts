@@ -201,7 +201,7 @@ const newPageAtom = atom<
   null,
   {
     newPageId: string;
-    title?: string;
+    title: string;
     children?: ShallowBlock[];
     goto?: boolean;
   }
@@ -210,6 +210,9 @@ const newPageAtom = atom<
   debugger;
   const newPageAtom = pageFamily({ id: newPageId, title, children });
   set(newPageAtom, get(newPageAtom));
+  if (goto) {
+    set(pageIdAtom, newPageId);
+  }
 });
 
 const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(

@@ -37,15 +37,14 @@ export function PageSearchInput() {
                 const p = {
                   newPageId,
                   title: searchInput,
-                  children: [{ id: nanoid(ID_LEN), children: [] }],
+                  goto: true,
                 };
                 debugger;
                 createNewPage(p);
-                updatePageId(newPageId);
                 genNew();
                 setSearchInput("");
               }}
-              className="w-full block hover:bg-gray-100 px-4 py-2 text-sm"
+              className="w-full block hover:bg-gray-100 px-4 py-2 text-sm cursor-pointer"
             >
               Create {searchInput}
             </a>

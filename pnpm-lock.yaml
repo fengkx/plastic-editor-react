@@ -4,10 +4,10 @@ specifiers:
   "@next/bundle-analyzer": ^11.1.0
   "@plastic-editor/protocol": ^0.0.6
   "@react-hookz/web": ^7.0.0
-  "@supabase/supabase-js": ^1.21.3
+  "@supabase/supabase-js": ^1.22.0
   "@types/file-saver": ^2.0.3
   "@types/lodash.debounce": ^4.0.6
-  "@types/react": ^17.0.18
+  "@types/react": ^17.0.19
   autoprefixer: ^10.3.1
   clsx: ^1.1.1
   date-fns: ^2.23.0
@@ -40,7 +40,7 @@ dependencies:
   "@next/bundle-analyzer": 11.1.0
   "@plastic-editor/protocol": 0.0.6
   "@react-hookz/web": 7.0.0_3a31e7949ecb4548f4e7f68b1744b798
-  "@supabase/supabase-js": 1.21.3
+  "@supabase/supabase-js": 1.22.0
   clsx: 1.1.1
   date-fns: 2.23.0
   fast-deep-equal: 3.1.3
@@ -53,7 +53,7 @@ dependencies:
   next: 11.1.0_648fca1e663eb4cc4d4d9be4fd8651ae
   optics-ts: 2.1.0
   react: 18.0.0-alpha-ed6c091fe-20210701
-  react-dnd: 14.0.3_1b20ff3994aecdcd32716d411a7ccd86
+  react-dnd: 14.0.3_3a087b5057cd8a240ac8b2a0c9c8062f
   react-dnd-html5-backend: 14.0.1
   react-dom: 18.0.0-alpha-ed6c091fe-20210701_2809a9cb067487d57565c7f65c527eaf
   text-spinners: 1.0.5
@@ -62,7 +62,7 @@ dependencies:
 devDependencies:
   "@types/file-saver": 2.0.3
   "@types/lodash.debounce": 4.0.6
-  "@types/react": 17.0.18
+  "@types/react": 17.0.19
   autoprefixer: 10.3.1_postcss@8.3.6
   eslint: 7.32.0
   eslint-config-next: 11.1.0_5976364cb0ac16872ff3eea1a55e5ca2
@@ -355,7 +355,7 @@ packages:
     engines: { node: ">= 8" }
     dependencies:
       "@nodelib/fs.scandir": 2.1.5
-      fastq: 1.11.1
+      fastq: 1.12.0
     dev: true
 
   /@plastic-editor/protocol/0.0.6:
@@ -410,7 +410,7 @@ packages:
         optional: true
     dependencies:
       "@types/js-cookie": 2.2.7
-      "@types/react": 17.0.18
+      "@types/react": 17.0.19
       "@types/react-dom": 17.0.9
       js-cookie: 2.2.1
       react: 18.0.0-alpha-ed6c091fe-20210701
@@ -461,10 +461,10 @@ packages:
       cross-fetch: 3.1.4
     dev: false
 
-  /@supabase/supabase-js/1.21.3:
+  /@supabase/supabase-js/1.22.0:
     resolution:
       {
-        integrity: sha512-+CLJr2q0fHCVDTqxSGyhrH0qQig5CkNNeXUi5UFAb8sksWCpWWKf9cSqbamOZFg1fkRuDTd3G+mcixL4Cuhi1w==,
+        integrity: sha512-JoOW5MZfwzzuwJsn4N56WexfjLtW50wQj7WEFCgMCD3/q6z4VNkPMD6+xEBleZudjbXawZ4n1o1O1sYL75u1YA==,
       }
     dependencies:
       "@supabase/gotrue-js": 1.17.0
@@ -510,10 +510,10 @@ packages:
       }
     dev: true
 
-  /@types/node/16.6.1:
+  /@types/node/16.6.2:
     resolution:
       {
-        integrity: sha512-Sr7BhXEAer9xyGuCN3Ek9eg9xPviCF2gfu9kTfuU2HkTVAMYSDeX40fvpmo72n5nansg3nsBjuQBrsS28r+NUw==,
+        integrity: sha512-LSw8TZt12ZudbpHc6EkIyDM3nHVWKYrAvGy6EAJfNfjusbwnThqjqxUKKRwuV3iWYeW/LYMzNgaq3MaLffQ2xA==,
       }
     dev: false
 
@@ -536,13 +536,13 @@ packages:
         integrity: sha512-wIvGxLfgpVDSAMH5utdL9Ngm5Owu0VsGmldro3ORLXV8CShrL8awVj06NuEXFQ5xyaYfdca7Sgbk/50Ri1GdPg==,
       }
     dependencies:
-      "@types/react": 17.0.18
+      "@types/react": 17.0.19
     dev: false
 
-  /@types/react/17.0.18:
+  /@types/react/17.0.19:
     resolution:
       {
-        integrity: sha512-YTLgu7oS5zvSqq49X5Iue5oAbVGhgPc5Au29SJC4VeE17V6gASoOxVkUDy9pXFMRFxCWCD9fLeweNFizo3UzOg==,
+        integrity: sha512-sX1HisdB1/ZESixMTGnMxH9TDe8Sk709734fEQZzCV/4lSu9kJCPbo2PbTRoZM+53Pp0P10hYVyReUueGwUi4A==,
       }
     dependencies:
       "@types/prop-types": 15.7.4
@@ -561,7 +561,7 @@ packages:
         integrity: sha512-qn1LkcFEKK8RPp459jkjzsfpbsx36BBt3oC3pITYtkoBw/aVX+EZFa5j3ThCRTNpLFvIMr5dSTD4RaMdilIOpA==,
       }
     dependencies:
-      "@types/node": 16.6.1
+      "@types/node": 16.6.2
     dev: false
 
   /@typescript-eslint/parser/4.29.2_eslint@7.32.0+typescript@4.3.5:
@@ -925,7 +925,7 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.16.7
+      browserslist: 4.16.8
       caniuse-lite: 1.0.30001251
       colorette: 1.3.0
       fraction.js: 4.1.1
@@ -1105,22 +1105,22 @@ packages:
     dependencies:
       caniuse-lite: 1.0.30001251
       colorette: 1.3.0
-      electron-to-chromium: 1.3.811
+      electron-to-chromium: 1.3.813
       escalade: 3.1.1
       node-releases: 1.1.75
     dev: false
 
-  /browserslist/4.16.7:
+  /browserslist/4.16.8:
     resolution:
       {
-        integrity: sha512-7I4qVwqZltJ7j37wObBe3SoTz+nS8APaNcrBOlgoirb6/HbEU2XxW/LpUDTCngM6iauwFqmRTuOMfyKnFGY5JA==,
+        integrity: sha512-sc2m9ohR/49sWEbPj14ZSSZqp+kbi16aLao42Hmn3Z8FpjuMaq2xCA2l4zl9ITfyzvnvyE0hcg62YkIGKxgaNQ==,
       }
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001251
       colorette: 1.3.0
-      electron-to-chromium: 1.3.811
+      electron-to-chromium: 1.3.813
       escalade: 3.1.1
       node-releases: 1.1.75
     dev: true
@@ -1763,10 +1763,10 @@ packages:
       }
     dev: false
 
-  /electron-to-chromium/1.3.811:
+  /electron-to-chromium/1.3.813:
     resolution:
       {
-        integrity: sha512-hv3kgf6YSd+jQ7J+7Kdm44yux/1vxcAwfGV/6M6Nq4E9zJ3Bml/P2+vULCvqLS6Lh9knBCQ7iEMvyeDiGe5EbA==,
+        integrity: sha512-YcSRImHt6JZZ2sSuQ4Bzajtk98igQ0iKkksqlzZLzbh4p0OIyJRSvUbsgqfcR8txdfsoYCc4ym306t4p2kP/aw==,
       }
 
   /elliptic/6.5.4:
@@ -1946,8 +1946,8 @@ packages:
       "@typescript-eslint/parser": 4.29.2_eslint@7.32.0+typescript@4.3.5
       eslint: 7.32.0
       eslint-import-resolver-node: 0.3.6
-      eslint-import-resolver-typescript: 2.4.0_44936d22002d8391d694a30a93d20642
-      eslint-plugin-import: 2.24.0_eslint@7.32.0
+      eslint-import-resolver-typescript: 2.4.0_dd24990a2f914d6f3397930dfc8171b2
+      eslint-plugin-import: 2.24.1_eslint@7.32.0
       eslint-plugin-jsx-a11y: 6.4.1_eslint@7.32.0
       eslint-plugin-react: 7.24.0_eslint@7.32.0
       eslint-plugin-react-hooks: 4.2.0_eslint@7.32.0
@@ -1967,7 +1967,7 @@ packages:
       resolve: 1.20.0
     dev: true
 
-  /eslint-import-resolver-typescript/2.4.0_44936d22002d8391d694a30a93d20642:
+  /eslint-import-resolver-typescript/2.4.0_dd24990a2f914d6f3397930dfc8171b2:
     resolution:
       {
         integrity: sha512-useJKURidCcldRLCNKWemr1fFQL1SzB3G4a0li6lFGvlc5xGe1hY343bvG07cbpCzPuM/lK19FIJB3XGFSkplA==,
@@ -1979,7 +1979,7 @@ packages:
     dependencies:
       debug: 4.3.2
       eslint: 7.32.0
-      eslint-plugin-import: 2.24.0_eslint@7.32.0
+      eslint-plugin-import: 2.24.1_eslint@7.32.0
       glob: 7.1.7
       is-glob: 4.0.1
       resolve: 1.20.0
@@ -1999,10 +1999,10 @@ packages:
       pkg-dir: 2.0.0
     dev: true
 
-  /eslint-plugin-import/2.24.0_eslint@7.32.0:
+  /eslint-plugin-import/2.24.1_eslint@7.32.0:
     resolution:
       {
-        integrity: sha512-Kc6xqT9hiYi2cgybOc0I2vC9OgAYga5o/rAFinam/yF/t5uBqxQbauNPMC6fgb640T/89P0gFoO27FOilJ/Cqg==,
+        integrity: sha512-KSFWhNxPH8OGJwpRJJs+Z7I0a13E2iFQZJIvSnCu6KUs4qmgAm3xN9GYBCSoiGWmwA7gERZPXqYQjcoCROnYhQ==,
       }
     engines: { node: ">=4" }
     peerDependencies:
@@ -2333,10 +2333,10 @@ packages:
     resolution: { integrity: sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc= }
     dev: true
 
-  /fastq/1.11.1:
+  /fastq/1.12.0:
     resolution:
       {
-        integrity: sha512-HOnr8Mc60eNYl1gzwp6r5RoUyAn5/glBolUzP/Ez6IFVPMPirxn/9phgL6zhOtaTy7ISwPvQ+wT+hfcRZh/bzw==,
+        integrity: sha512-VNX0QkHK3RsXVKr9KrlUv/FoTa0NdbYoHHl7uXHv2rzyHSlxjdNAKug2twd9luJxpcyNeAgf5iPPMutJO67Dfg==,
       }
     dependencies:
       reusify: 1.0.4
@@ -3058,7 +3058,7 @@ packages:
       }
     engines: { node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0 }
     dependencies:
-      "@types/node": 16.6.1
+      "@types/node": 16.6.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -4404,7 +4404,7 @@ packages:
       dnd-core: 14.0.0
     dev: false
 
-  /react-dnd/14.0.3_1b20ff3994aecdcd32716d411a7ccd86:
+  /react-dnd/14.0.3_3a087b5057cd8a240ac8b2a0c9c8062f:
     resolution:
       {
         integrity: sha512-i73Hx5SKfDRdwXe30+CjF/DidiRdt/gwpPN14ajkPR20t/0osnNKFNHg3DLV6RZym+DJ0pO9H5APeMsBWGU3+Q==,
@@ -4424,7 +4424,7 @@ packages:
     dependencies:
       "@react-dnd/invariant": 2.0.0
       "@react-dnd/shallowequal": 2.0.0
-      "@types/react": 17.0.18
+      "@types/react": 17.0.19
       dnd-core: 14.0.0
       fast-deep-equal: 3.1.3
       hoist-non-react-statics: 3.3.2

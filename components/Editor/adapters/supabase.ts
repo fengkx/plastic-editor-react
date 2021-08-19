@@ -15,7 +15,6 @@ import {
   SimpleStorage,
   Storage,
 } from "../../../atom-util/atomWithDebouncedStorage";
-import { nanoid } from "nanoid";
 import { PageEngine } from "@plastic-editor/protocol";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import FileSaver from "file-saver";
@@ -195,14 +194,12 @@ const newPageAtom = atom<
     goto?: boolean;
   }
 >(null, async (get, set, update) => {
+  debugger;
   const { newPageId, title, children, goto } = update;
-  await supabase
-    .from<definitions["page_metas"]>("page_metas")
-    .upsert({ page_id: newPageId, is_public: false, is_writable: false });
-  const newPageAtom = pageFamily({ id: newPageId, title, children });
-  const newPage = get(newPageAtom);
-  console.log({ newPage });
-  set(newPageAtom, newPage);
+  pageFamily({ id: newPageId, title, children });
+  if (goto) {
+    set(pageIdAtom, newPageId);
+  }
 });
 
 const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(

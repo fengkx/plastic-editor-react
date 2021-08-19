@@ -18,20 +18,7 @@ export const Editor: React.FC<PropsType> = ({
   const { usePage } = useAdapter();
   const [page, setPage] = usePage();
   const router = useRouter();
-  useMountEffect(() => {
-    debugger;
-    if (router.query.title) {
-      const title = Array.isArray(router.query.title)
-        ? router.query.title[0]
-        : router.query.title;
-      setPage(
-        produce(page, (draft) => {
-          page.title = title;
-        })
-      );
-    }
-    setPage(page);
-  });
+
   return (
     <div id="block-root">
       <DndProvider backend={HTML5Backend}>
