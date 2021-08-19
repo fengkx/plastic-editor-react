@@ -58,7 +58,6 @@ const pageStorage: SimpleStorage<
       .from<definitions["page_content"]>("page_content")
       .select()
       .eq("page_id", id);
-    debugger;
     const dbValue = resp.data?.[0];
     return dbValue?.content ?? null;
   },
@@ -146,8 +145,7 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
     async getItem(key) {
       const resp = await supabase.from<definitions["stars"]>("stars").select();
       const dbValue = resp.data?.[0]?.content ?? [];
-      if (dbValue) dbValue;
-      return [];
+      return dbValue;
     },
     async setItem(key, newVal) {
       const resp = await supabase.from<definitions["stars"]>("stars").upsert({
@@ -198,7 +196,6 @@ const newPageAtom = atom<
   }
 >(null, async (get, set, update) => {
   const { newPageId, title, children, goto } = update;
-  debugger;
   await supabase
     .from<definitions["page_metas"]>("page_metas")
     .upsert({ page_id: newPageId, is_public: false, is_writable: false });
@@ -267,18 +264,46 @@ const pageValuesAtom = atom(async (get) => {
 
 const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
   const loadNote = async () => {
-    await supabase
-      .from<definitions["page_metas"]>("page_metas")
-      .upsert(update.pages.map((p) => ({ page_id: p.id })));
-    await supabase.from<definitions["page_content"]>("page_content").upsert(
-      update.pages.map((p) => ({
-        page_id: p.id,
-        content: p,
-      }))
+    await supabase.from<definitions["page_metas"]>("page_metas").upsert(
+      update.pages.map((p) => ({ page_id: p.id })),
+      { onConflict: "page_id" }
     );
+    const promises = [
+      supabase.from<definitions["page_content"]>("page_content").upsert(
+        update.pages.map((p) => ({
+          page_id: p.id,
+          content: p,
+        })),
+        { onConflict: "page_id" }
+      ),
+      supabase.from<definitions["blocks"]>("blocks").upsert(
+        Object.values(update.blocks).map((b) => ({
+          block_id: b.id,
+          content: b,
+        })),
+        { onConflict: "block_id" }
+      ),
+    ];
+    return await Promise.all(promises as any);
   };
-  loadNote();
-  set(starsAtom, update.stars);
+
+  loadNote().then((res) => {
+    const currPageId = get(pageIdAtom);
+    const [pageContentResp, blockResp] = res;
+    const pageContents = (pageContentResp as any)
+      .data as definitions["page_content"][];
+    let currPage = pageContents.find((p) => p.page_id === currPageId);
+    if (currPage) {
+      set(pageFamily({ id: currPageId }), currPage.content);
+    }
+    set(starsAtom, update.stars);
+    ((blockResp as any).data as definitions["blocks"][])
+      .filter((b) => b.content.pageId === currPageId)
+      .forEach((b) => {
+        set(blockFamily({ id: b.block_id!, pageId: currPageId }), b.content);
+      });
+    set(starsAtom, update.stars);
+  });
 });
 
 const saveNotesAtom = atom(null, (get) => {
@@ -297,7 +322,7 @@ const saveNotesAtom = atom(null, (get) => {
         acc[cur.id] = cur;
         return acc;
       }, {});
-    const stars = starsResp.data?.[0].content ?? [];
+    const stars = starsResp.data?.[0]?.content ?? [];
 
     const note: Note = {
       pages,
