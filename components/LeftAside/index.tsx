@@ -2,10 +2,12 @@ import { useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, Suspense } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Note } from "../Editor/adapters/types";
 import { ToolButton } from "./ToolButton";
+import { DotFlashing } from "../Loading";
+import { hasSupabase, supabase } from "../../db";
 export const LeftAside: React.FC = () => {
   const router = useRouter();
   const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
@@ -28,7 +30,7 @@ export const LeftAside: React.FC = () => {
           imgWidth={24}
           imgHeight={24}
           src="/icons/download-2-line.svg"
-          alt="Save button"
+          alt="Save"
           onClick={saveNote}
         />
         <input
@@ -37,7 +39,11 @@ export const LeftAside: React.FC = () => {
           id="import"
           type="file"
         />
-        <label htmlFor="import" className="cursor-pointer bg-white p-1">
+        <label
+          htmlFor="import"
+          title="Load Note"
+          className="cursor-pointer bg-white p-1"
+        >
           {/* eslint-disable-next-line  @next/next/no-img-element */}
           <img
             width={24}
@@ -56,6 +62,32 @@ export const LeftAside: React.FC = () => {
             gotoPage({ router, path: "/docs", id: "__docs__", today: false });
           }}
         />
+        {hasSupabase && (
+          <>
+            {supabase.auth.session() ? (
+              <ToolButton
+                src="/icons/log-out.svg"
+                alt="Logout"
+                imgWidth={24}
+                imgHeight={24}
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  router.reload();
+                }}
+              />
+            ) : (
+              <ToolButton
+                src="/icons/log-in.svg"
+                alt="Logout"
+                imgWidth={24}
+                imgHeight={24}
+                onClick={() => {
+                  router.push("/login");
+                }}
+              />
+            )}
+          </>
+        )}
       </div>
       <div className="font-medium mt-4">
         <a
@@ -69,7 +101,11 @@ export const LeftAside: React.FC = () => {
       </div>
       <div className="mt-8 font-medium">
         <h2 className="px-4 text-gray-500 mb-2">Stared pages</h2>
-        <StarPageList />
+        <Suspense
+          fallback={<DotFlashing className="block px-4 py-1 text-lg" />}
+        >
+          <StarPageList />
+        </Suspense>
       </div>
     </aside>
   );
@@ -77,7 +113,7 @@ export const LeftAside: React.FC = () => {
 
 function StarPageList() {
   const { starsAtom } = useAdapter();
-  const [stars] = useAtom(starsAtom);
+  const stars = useAtomValue(starsAtom);
   return (
     <div>
       {stars.map((pageId) => {

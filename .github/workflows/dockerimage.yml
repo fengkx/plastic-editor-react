@@ -1,0 +1,61 @@
+name: Publish Docker
+on:
+  - push
+  - pull_request_target
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+          run_install: true
+      - name: Build static
+        shell: bash
+        id: build-static
+        run: |
+          export NEXT_PUBLIC_SUPABASE_URL=ECALPER_EB_OT_GNIRTS_EUQINU_YREV_EMOS_SUPABASE_URL
+          export NEXT_PUBLIC_SUPABSE_PUBLIC_ANON_KEY=ECALPER_EB_OT_GNIRTS_EUQINU_YREV_EMOS_SUPABSE_PUBLIC_ANON_KEY
+          pnpm run build
+          pnpm run export
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: output-docker-tag
+        shell: bash
+        id: docker-tag
+        run: |
+          unset BRANCH_NAME
+          BRANCH_NAME=`echo $GITHUB_REF | cut -d '/' -f3 -`
+          echo "BRANCH_NAME: $BRANCH_NAME"
+          unset IMG_TAGS ; if [[ $BRANCH_NAME == "master" ]]; then IMG_TAGS='latest' ; else IMG_TAGS="$BRANCH_NAME"; fi
+          SHA_TAG=`echo $GITHUB_SHA | head -c 7`
+          echo "SHA_TAG: $SHA_TAG"
+          echo ::set-output name=DOCKER_BRANCH_TAG::${IMG_TAGS}
+          echo ::set-output name=DOCKER_SHA_TAG::${SHA_TAG}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile-ci
+          push: ${{ github.ref == 'refs/heads/master' }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          tags: fengkx/plastic-editor:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/plastic-editor:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}

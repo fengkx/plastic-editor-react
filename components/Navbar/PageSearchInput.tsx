@@ -2,19 +2,20 @@ import produce from "immer";
 import { atom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useNanoid } from "../../hooks/useNanoid";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
+import { nanoid } from "nanoid";
+import { ID_LEN } from "../Editor/adapters/memory";
 
 const searchInputAtom = atom("");
 export function PageSearchInput() {
-  const { pageFamily, pageIdAtom } = useAdapter();
+  const { newPageAtom, pageIdAtom } = useAdapter();
   const [searchInput, setSearchInput] = useAtom(searchInputAtom);
   const [isShow, setIsShow] = useState(false);
   const updatePageId = useUpdateAtom(pageIdAtom);
-  const [newPageId, genNewPageId] = useNanoid();
-  const [newPage, updateNewPage] = useAtom(pageFamily({ id: newPageId }));
-
+  const [newPageId, genNew] = useNanoid();
+  const createNewPage = useUpdateAtom(newPageAtom);
   return (
     <div className="relative z-40">
       <input
@@ -33,21 +34,24 @@ export function PageSearchInput() {
           <Link href={`/note/${newPageId}?title=${searchInput}`}>
             <a
               onClick={() => {
-                updatePageId(newPageId);
-                updateNewPage(
-                  produce(newPage, (draft) => {
-                    draft.title = searchInput;
-                  })
-                );
-                genNewPageId();
+                const p = {
+                  newPageId,
+                  title: searchInput,
+                  goto: true,
+                };
+                debugger;
+                createNewPage(p);
+                genNew();
                 setSearchInput("");
               }}
-              className="w-full block hover:bg-gray-100 px-4 py-2 text-sm"
+              className="w-full block hover:bg-gray-100 px-4 py-2 text-sm cursor-pointer"
             >
               Create {searchInput}
             </a>
           </Link>
-          <PageItemList />
+          <Suspense fallback={null}>
+            <PageItemList />
+          </Suspense>
         </div>
       )}
     </div>

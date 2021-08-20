@@ -9,7 +9,7 @@ export default function NotePage(props) {
     return null;
   }
   return (
-    <AdapterProvider adapter={memoryAdapter}>
+    <AdapterProvider>
       <Main />
     </AdapterProvider>
   );

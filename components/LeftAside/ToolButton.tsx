@@ -19,7 +19,12 @@ export const ToolButton: React.FC<PropsType> = ({
   style,
 }) => {
   return (
-    <button className="bg-white rounded p-1" onClick={onClick} style={style}>
+    <button
+      className="bg-white rounded p-1"
+      title={alt}
+      onClick={onClick}
+      style={style}
+    >
       {/* eslint-disable-next-line  @next/next/no-img-element */}
       <img width={imgWidth} height={imgHeight} src={src} alt={alt} />
     </button>

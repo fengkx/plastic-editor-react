@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { LeftAside } from "../LeftAside";
 import { Navbar } from "../Navbar";
 import { Note } from "../Note";
@@ -8,7 +9,9 @@ export function Main() {
       <LeftAside />
       <div className="flex-1 overflow scroll">
         <Navbar />
-        <Note />
+        <Suspense fallback={"Loading"}>
+          <Note />
+        </Suspense>
       </div>
     </div>
   );

@@ -5,16 +5,21 @@ import { useCallback } from "react";
 import { Editor } from "./Editor";
 import { useAdapter } from "./Editor/adapters/AdapterContext";
 import { Reference } from "./Reference";
+import produce from "immer";
 
 function Title() {
-  const { pageTitleAtom } = useAdapter();
-  const [title, setTitle] = useAtom(pageTitleAtom);
+  const { usePage } = useAdapter();
+  const [page, setPage] = usePage();
   return (
     <>
       <input
-        value={title}
+        value={page.title}
         onChange={(ev) => {
-          setTitle(ev.target.value);
+          setPage(
+            produce(page, (draft) => {
+              draft.title = ev.target.value;
+            })
+          );
         }}
         type="text"
         className="outline-none text-4xl font-bold w-full"
