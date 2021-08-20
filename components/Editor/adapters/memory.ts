@@ -55,7 +55,6 @@ const pageFamily = atomFamily<
   ({ id, children, title }) =>
     atom(
       (get) => {
-        debugger;
         const cache = get(pagesAtom);
         const cachedValue = cache[id];
         if (cachedValue) {
@@ -207,7 +206,6 @@ const newPageAtom = atom<
   }
 >(null, (get, set, update) => {
   const { newPageId, title, children, goto } = update;
-  debugger;
   const newPageAtom = pageFamily({ id: newPageId, title, children });
   set(newPageAtom, get(newPageAtom));
   if (goto) {
@@ -233,9 +231,11 @@ const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
   }
 );
 
-const pageValuesAtom = atom((get) => {
-  return Object.values(get(pagesAtom));
-});
+const pageValuesAtom = atom<(Partial<Page> & Pick<Page, "title" | "id">)[]>(
+  (get) => {
+    return Object.values(get(pagesAtom));
+  }
+);
 
 const saveNotesAtom = atom(null, (get) => {
   const pages = Object.values(get(pagesAtom));

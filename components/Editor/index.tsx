@@ -19,7 +19,6 @@ export const Editor: React.FC<PropsType> = ({
   const [page, setPage] = usePage();
   const router = useRouter();
   useMountEffect(() => {
-    debugger;
     if (router.query.title) {
       const title = Array.isArray(router.query.title)
         ? router.query.title[0]

@@ -194,7 +194,6 @@ const newPageAtom = atom<
     goto?: boolean;
   }
 >(null, async (get, set, update) => {
-  debugger;
   const { newPageId, title, children, goto } = update;
   pageFamily({ id: newPageId, title, children });
   if (goto) {
@@ -265,7 +264,7 @@ const useBlock = (id: string) => {
 const pageValuesAtom = atom(async (get) => {
   const resp = await supabase
     .from<definitions["page_content"]>("page_content")
-    .select();
+    .select("content");
   return resp.data?.map((item) => item.content) ?? [];
 });
 

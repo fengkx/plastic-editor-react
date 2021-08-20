@@ -2,25 +2,31 @@ import { NextPage } from "next";
 import { useCallback, useState } from "react";
 import NotFound from "../../components/404";
 import { supabase, hasSupabase } from "../../db";
+import { Toaster } from "react-hot-toast";
+import { useAuth } from "../../hooks/signin-signout";
+import { useRouter } from "next/router";
 
 const SignupPage: NextPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const handleSignUp = useCallback(
-    async (ev) => {
-      ev.preventDefault();
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
-      alert("Check your email");
-    },
-    [email, password]
-  );
+  const router = useRouter();
+  const { email, setEmail, password, setPassword, error, signUp } = useAuth({
+    supabase,
+  });
   return (
-    <div className="max-w-2xl mx-auto items-center flex text-center h-screen flex-col justify-center">
+    <div className="max-w-3xl mx-auto items-center flex text-center h-screen flex-col justify-center">
+      <Toaster />
       <p className="text-3xl font-extrabold text-gray-900">
         Sign up Sync your page to cloud stoarge
       </p>
-      <form className="mt-8 space-y-6 w-8/12 mx-auto" onSubmit={handleSignUp}>
+      <form
+        className="mt-8 space-y-6 w-10/12 mx-auto"
+        onSubmit={async (ev) => {
+          ev.preventDefault();
+          await signUp({ email, password, redirectTo: "/login" });
+          if (!error) {
+            router.push("/");
+          }
+        }}
+      >
         <input type="hidden" name="remember" value="true" />
         <div className="rounded-md shadow-sm -space-y-px">
           <div>
