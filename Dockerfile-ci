@@ -1,0 +1,9 @@
+FROM ranadeeppolavarapu/nginx-http3:latest
+ENV NGINX_ENVSUBST_OUTPUT_DIR /etc/nginx
+
+COPY nginx/nginx.conf /etc/nginx/templates/nginx.conf.template
+COPY nginx/site-common.conf /etc/nginx/site-common.conf
+COPY out/ /var/www/static/
+COPY docker-entry-static.sh /app/docker-entry-static.sh
+WORKDIR /var/www/static
+CMD ["sh", "/app/docker-entry-static.sh"]

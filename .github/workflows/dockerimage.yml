@@ -9,6 +9,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+          run_install: true
+      - name: Build static
+        shell: bash
+        id: build-static
+        run: |
+          export NEXT_PUBLIC_SUPABASE_URL=ECALPER_EB_OT_GNIRTS_EUQINU_YREV_EMOS_SUPABASE_URL
+          export NEXT_PUBLIC_SUPABSE_PUBLIC_ANON_KEY=ECALPER_EB_OT_GNIRTS_EUQINU_YREV_EMOS_SUPABSE_PUBLIC_ANON_KEY
+          pnpm run build
+          pnpm run export
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -35,6 +55,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: Dockerfile-ci
           push: ${{ github.ref == 'refs/heads/master' }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           tags: fengkx/plastic-editor:${{steps.docker-tag.outputs.DOCKER_BRANCH_TAG}},fengkx/plastic-editor:${{steps.docker-tag.outputs.DOCKER_SHA_TAG}}
