@@ -10,7 +10,9 @@ ARG NEXT_PUBLIC_SUPABSE_PUBLIC_ANON_KEY=ECALPER_EB_OT_GNIRTS_EUQINU_YREV_EMOS_SU
 RUN pnpm run build && pnpm run export
 
 FROM ranadeeppolavarapu/nginx-http3:latest
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+ENV NGINX_ENVSUBST_OUTPUT_DIR /etc/nginx
+
+COPY nginx/nginx.conf /etc/nginx/templates/nginx.conf.template
 COPY nginx/site-common.conf /etc/nginx/site-common.conf
 COPY --from=builder /app/out/ /var/www/static/
 COPY docker-entry-static.sh /app/docker-entry-static.sh
