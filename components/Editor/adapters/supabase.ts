@@ -224,12 +224,11 @@ const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
   null,
   (get, set, update) => {
     const { path, blockId } = update;
-    const page = get(pageFamily({ id: get(pageIdAtom) }));
+    const pageAtom = pageFamily({ id: get(pageIdAtom) });
+    const page = get(pageAtom);
     const pageEngine = new PageEngine(page);
     const [closest, closetPos] = pageEngine.upClosest(path);
     pageEngine.remove(path);
-    set(anchorOffsetAtom, Infinity);
-    set(editingBlockIdAtom, closest.id);
     const writeDb = async () => {
       await supabase.from<definitions["page_content"]>("page_content").upsert(
         {
@@ -238,12 +237,20 @@ const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
         },
         { onConflict: "page_id" }
       );
-      await supabase
-        .from<definitions["blocks"]>("blocks")
-        .delete()
-        .eq("block_id", blockId);
     };
-    writeDb().then(() => set(isStaleAtom, false));
+    writeDb()
+      .then(() => {
+        set(isStaleAtom, false);
+        set(pageAtom, pageEngine.page);
+        set(anchorOffsetAtom, Infinity);
+        set(editingBlockIdAtom, closest.id);
+      })
+      .finally(() => {
+        supabase
+          .from<definitions["blocks"]>("blocks")
+          .delete()
+          .eq("block_id", blockId);
+      });
   }
 );
 
