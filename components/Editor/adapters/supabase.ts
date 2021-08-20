@@ -231,10 +231,13 @@ const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
     set(anchorOffsetAtom, Infinity);
     set(editingBlockIdAtom, closest.id);
     const writeDb = async () => {
-      await supabase.from<definitions["page_content"]>("page_content").upsert({
-        page_id: page.id,
-        content: pageEngine.page,
-      });
+      await supabase.from<definitions["page_content"]>("page_content").upsert(
+        {
+          page_id: page.id,
+          content: pageEngine.page,
+        },
+        { onConflict: "page_id" }
+      );
       await supabase
         .from<definitions["blocks"]>("blocks")
         .delete()
