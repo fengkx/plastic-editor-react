@@ -22,7 +22,7 @@ const LoginPage: NextPage = () => {
       ev.preventDefault();
       await signIn({ email, password, redirectTo: window.location.href });
     },
-    [router, email, password]
+    [email, password, signIn]
   );
   return (
     <div className="max-w-3xl mx-auto items-center flex text-center h-screen flex-col justify-center">
@@ -34,7 +34,7 @@ const LoginPage: NextPage = () => {
         <GithubLoginButton
           onClick={useCallback(async () => {
             await signIn({ provider: "github" });
-          }, [])}
+          }, [signIn])}
         />
       </div>
       {/*<form className="mt-8 space-y-6 w-10/12 mx-auto" onSubmit={handleSignIn}>*/}
