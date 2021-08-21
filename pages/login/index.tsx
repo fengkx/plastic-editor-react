@@ -21,7 +21,7 @@ const LoginPage: NextPage = () => {
   const handleSignIn = useCallback(
     async (ev) => {
       ev.preventDefault();
-      await signIn({ email, password, redirectTo: window.location.href });
+      await signIn({ email, password, redirectTo: window.location.origin });
     },
     [email, password, signIn]
   );
@@ -34,12 +34,18 @@ const LoginPage: NextPage = () => {
       <div className="w-64 mt-8 space-y-6">
         <GitHubLoginButton
           onClick={useCallback(async () => {
-            await signIn({ provider: "github" });
+            await signIn({
+              provider: "github",
+              redirectTo: window.location.href,
+            });
           }, [signIn])}
         />
         <GoogleLoginButton
           onClick={useCallback(async () => {
-            await signIn({ provider: "google" });
+            await signIn({
+              provider: "google",
+              redirectTo: window.location.href,
+            });
           }, [signIn])}
         />
       </div>
