@@ -360,7 +360,7 @@ const gotoPageAtom = atom<null, todayPageUpdate>(
       const resp = await supabase
         .from("page_content")
         .select("page_id")
-        .eq("content->title", title);
+        .eq("content->>title", title);
       id = resp?.data?.[0]?.page_id ?? nanoid(ID_LEN);
       path = `/note/${id}`;
     } else {
