@@ -5,6 +5,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Block } from "../Block";
 import { useAdapter } from "./adapters/AdapterContext";
+import { useEffect } from "react";
+import { useUpdateAtom } from "jotai/utils";
 
 export type PropsType = {
   editable?: boolean;
@@ -15,7 +17,8 @@ export const Editor: React.FC<PropsType> = ({
   editable = true,
   initialBlockId = "",
 }) => {
-  const { usePage } = useAdapter();
+  const { usePage, pageIdAtom } = useAdapter();
+  const setPageId = useUpdateAtom(pageIdAtom);
   const [page, setPage] = usePage();
   const router = useRouter();
   useMountEffect(() => {
@@ -30,6 +33,15 @@ export const Editor: React.FC<PropsType> = ({
       );
     }
     setPage(page);
+    router.beforePopState((nextState) => {
+      if (nextState.url === "/note/[pageId]") {
+        const pageId = nextState?.as?.match?.(/note\/([^\/+])/)?.[1];
+        if (pageId) {
+          setPageId(pageId);
+        }
+      }
+      return true;
+    });
   });
   return (
     <div id="block-root">
