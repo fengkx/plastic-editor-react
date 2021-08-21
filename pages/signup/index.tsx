@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import { useCallback, useState } from "react";
 import NotFound from "../../components/404";
 import { supabase, hasSupabase } from "../../db";
 import { Toaster } from "react-hot-toast";

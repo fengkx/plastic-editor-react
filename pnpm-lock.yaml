@@ -31,7 +31,6 @@ specifiers:
   react-dnd-html5-backend: ^14.0.1
   react-dom: ^18.0.0-alpha-ed6c091fe-20210701
   react-hot-toast: ^2.1.0
-  react-social-login-buttons: ^3.5.1
   tailwindcss: ^2.2.7
   text-spinners: ^1.0.5
   tinykeys: ^1.2.0
@@ -59,7 +58,6 @@ dependencies:
   react-dnd-html5-backend: 14.0.1
   react-dom: 18.0.0-alpha-ed6c091fe-20210701_2809a9cb067487d57565c7f65c527eaf
   react-hot-toast: 2.1.0_99a5b08213840631d1fe42c974a0200d
-  react-social-login-buttons: 3.5.1_2809a9cb067487d57565c7f65c527eaf
   text-spinners: 1.0.5
   tinykeys: 1.2.0
 
@@ -4494,17 +4492,6 @@ packages:
         integrity: sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==,
       }
     engines: { node: ">=0.10.0" }
-    dev: false
-
-  /react-social-login-buttons/3.5.1_2809a9cb067487d57565c7f65c527eaf:
-    resolution:
-      {
-        integrity: sha512-3TjHYARN9cOfEEl6uQeeB1oMV/dJ2lyxqK98Y+HuvP0E9Q0HJoFvNps6h6EYKE6Yw6LMllUeR5264tSqalM/ww==,
-      }
-    peerDependencies:
-      react: ^15.0.0 || ^16.0.0 || ^17.x
-    dependencies:
-      react: 18.0.0-alpha-ed6c091fe-20210701
     dev: false
 
   /react/18.0.0-alpha-ed6c091fe-20210701:

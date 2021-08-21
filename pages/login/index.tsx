@@ -1,12 +1,12 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import NotFound from "../../components/404";
 import { hasSupabase, supabase } from "../../db";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "../../hooks/signin-signout";
-import { GithubLoginButton } from "react-social-login-buttons";
+import { GitHubSocialButton } from "../../components/social-buttons/GitHubSocialButton";
+
 const LoginPage: NextPage = () => {
   const router = useRouter();
   const { email, setEmail, password, setPassword, error, signIn } = useAuth({
@@ -31,7 +31,7 @@ const LoginPage: NextPage = () => {
         Login to Sync your page to cloud stoarge
       </p>
       <div className="w-64 mt-8">
-        <GithubLoginButton
+        <GitHubSocialButton
           onClick={useCallback(async () => {
             await signIn({ provider: "github" });
           }, [signIn])}

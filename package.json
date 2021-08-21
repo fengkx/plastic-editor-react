@@ -31,7 +31,6 @@
     "react-dnd-html5-backend": "^14.0.1",
     "react-dom": "^18.0.0-alpha-ed6c091fe-20210701",
     "react-hot-toast": "^2.1.0",
-    "react-social-login-buttons": "^3.5.1",
     "text-spinners": "^1.0.5",
     "tinykeys": "^1.2.0"
   },
@@ -54,6 +53,8 @@
     "pre-commit": "npm run lint && pretty-quick --staged && tsc --noEmit"
   },
   "browserslist": [
-    "chrome 87"
+    "chrome >= 70",
+    "firefox >= 74",
+    "not ie <= 11"
   ]
 }
