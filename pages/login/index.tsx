@@ -5,7 +5,8 @@ import NotFound from "../../components/404";
 import { hasSupabase, supabase } from "../../db";
 import { Toaster } from "react-hot-toast";
 import { useAuth } from "../../hooks/signin-signout";
-import { GitHubSocialButton } from "../../components/social-buttons/GitHubSocialButton";
+import { GitHubLoginButton } from "../../components/social-buttons/GitHubLoginButton";
+import { GoogleLoginButton } from "../../components/social-buttons/GoogleLoginButton";
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
@@ -30,10 +31,15 @@ const LoginPage: NextPage = () => {
       <p className="text-2xl font-extrabold text-gray-900">
         Login to Sync your page to cloud stoarge
       </p>
-      <div className="w-64 mt-8">
-        <GitHubSocialButton
+      <div className="w-64 mt-8 space-y-6">
+        <GitHubLoginButton
           onClick={useCallback(async () => {
             await signIn({ provider: "github" });
+          }, [signIn])}
+        />
+        <GoogleLoginButton
+          onClick={useCallback(async () => {
+            await signIn({ provider: "google" });
           }, [signIn])}
         />
       </div>

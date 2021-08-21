@@ -1,12 +1,8 @@
-import React, { MouseEvent, CSSProperties } from "react";
+import React from "react";
 import clsx from "clsx";
+import { commonClasses, PropsType } from "./shared";
 
-type PropsType = {
-  className?: string;
-  style?: CSSProperties;
-  onClick: (ev: MouseEvent<HTMLButtonElement>) => void;
-};
-export const GitHubSocialButton: React.FC<PropsType> = ({
+export const GitHubLoginButton: React.FC<PropsType> = ({
   onClick,
   className,
   style,
@@ -15,10 +11,7 @@ export const GitHubSocialButton: React.FC<PropsType> = ({
     <button
       type="button"
       onClick={onClick}
-      className={clsx(
-        "block px-4 py-2 text-xl  font-semibold text-white text-lg overflow-hidden rounded shadow",
-        className
-      )}
+      className={clsx(commonClasses, "text-white", className)}
       style={{
         backgroundColor: "#333",
         ...style,
