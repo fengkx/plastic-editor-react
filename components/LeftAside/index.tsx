@@ -60,9 +60,19 @@ export const LeftAside: React.FC = () => {
           imgHeight={24}
           onClick={() => {
             if (/^(?:zh|zh-CN)$/.test(navigator.language)) {
-              router.push("/docs/zh");
+              gotoPage({
+                router,
+                path: "/docs/zh",
+                id: "__docs__",
+                today: false,
+              });
             } else {
-              router.push("/docs/en");
+              gotoPage({
+                router,
+                path: "/docs/en",
+                id: "__docs__",
+                today: false,
+              });
             }
           }}
         />
