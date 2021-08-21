@@ -59,7 +59,11 @@ export const LeftAside: React.FC = () => {
           imgWidth={24}
           imgHeight={24}
           onClick={() => {
-            gotoPage({ router, path: "/docs", id: "__docs__", today: false });
+            if (/^(?:zh|zh-CN)$/.test(navigator.language)) {
+              router.push("/docs/zh");
+            } else {
+              router.push("/docs/en");
+            }
           }}
         />
         {hasSupabase && (
