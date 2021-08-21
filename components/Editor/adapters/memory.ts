@@ -271,7 +271,7 @@ const useBlock = (id: string) => {
   return useAtom(blockFamily({ id, pageId }));
 };
 
-type todayPageUpdate =
+export type todayPageUpdate =
   | {
       router: NextRouter;
       id: string;

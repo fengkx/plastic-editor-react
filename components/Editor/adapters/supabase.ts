@@ -1,4 +1,10 @@
-import { blockDefault, ID_LEN, memoryAdapter, pageDefault } from "./memory";
+import {
+  blockDefault,
+  ID_LEN,
+  memoryAdapter,
+  pageDefault,
+  todayPageUpdate,
+} from "./memory";
 import { atomFamily, useAtomValue } from "jotai/utils";
 import {
   Block,
@@ -18,6 +24,8 @@ import {
 import { PageEngine } from "@plastic-editor/protocol";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import FileSaver from "file-saver";
+import { format } from "date-fns";
+import { nanoid } from "nanoid";
 
 const DEBOUNCE_WAIT = 500;
 const DEBOUNCE_MAX_WAIT = 1500;
@@ -26,7 +34,7 @@ export type TSupabaseAdapter = Omit<
   typeof memoryAdapter,
   "pagesAtom" | "blocksAtom"
 >;
-const { isStaleAtom, gotoPageAtom, pageIdAtom } = memoryAdapter;
+const { isStaleAtom, pageIdAtom } = memoryAdapter;
 
 const blockStoarge: SimpleStorage<Block> = {
   getItem: async (id) => {
@@ -343,6 +351,33 @@ const saveNotesAtom = atom(null, (get) => {
     FileSaver.saveAs(blob, "note.json");
   });
 });
+const gotoPageAtom = atom<null, todayPageUpdate>(
+  null,
+  async (get, set, update) => {
+    let path: string, id: string;
+    if (update.today) {
+      const title = format(new Date(), "MMMM, dd, yyyy");
+      const resp = await supabase
+        .from("page_content")
+        .select("page_id")
+        .eq("content->title", title);
+      id = resp?.data?.[0]?.page_id ?? nanoid(ID_LEN);
+      path = `/note/${id}`;
+    } else {
+      id = update.id;
+      path = update.path;
+    }
+    const { router } = update;
+    if (router) {
+      if (update.replace) {
+        router.replace(path);
+      } else {
+        router.push(path);
+      }
+      set(pageIdAtom, id);
+    }
+  }
+);
 
 export const supbaseAdapter: TSupabaseAdapter = {
   isStaleAtom,
