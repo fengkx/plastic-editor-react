@@ -297,7 +297,7 @@ const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
         { onConflict: "block_id" }
       ),
     ];
-    return await Promise.all(promises as any);
+    return Promise.all(promises as any);
   };
 
   loadNote().then((res) => {
