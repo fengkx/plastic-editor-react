@@ -140,7 +140,7 @@ function BlockChildren({
     <div className={"children flex ml-4"}>
       <div
         className="self-stretch bg-gray-300"
-        style={{ width: 1, marginLeft: 2 }}
+        style={{ width: 1, marginLeft: 1 }}
       />
       <div className="flex-1 max-w-full">
         {shallowBlock.children.map((shallow, idx) => {

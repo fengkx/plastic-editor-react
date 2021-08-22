@@ -27,8 +27,8 @@ import FileSaver from "file-saver";
 import { format } from "date-fns";
 import { nanoid } from "nanoid";
 
-const DEBOUNCE_WAIT = 500;
-const DEBOUNCE_MAX_WAIT = 1500;
+const DEBOUNCE_WAIT = 1000;
+const DEBOUNCE_MAX_WAIT = 2500;
 
 export type TSupabaseAdapter = Omit<
   typeof memoryAdapter,

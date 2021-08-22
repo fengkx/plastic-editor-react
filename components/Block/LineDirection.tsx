@@ -3,7 +3,7 @@ import type { useDrag } from "react-dnd";
 type TDragRef = ReturnType<typeof useDrag>[1];
 const LineDirectionImpl: React.FC<{ dragRef: TDragRef }> = ({ dragRef }) => {
   return (
-    <div className="pl-4 pr-2" style={{ marginTop: 2 }}>
+    <div className="pl-2 pr-2" style={{ marginTop: 2 }}>
       <div
         ref={dragRef}
         className="hover:bg-gray-200 rounded-full flex justify-center items-center cursor-move"
