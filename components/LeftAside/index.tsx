@@ -25,7 +25,9 @@ export const LeftAside: React.FC = () => {
     },
     [loadNote]
   );
-  const [isShowMenu, toggleIsShowMenu] = useToggle(window.innerWidth >= 1024);
+  const [isShowMenu, toggleIsShowMenu] = useToggle(
+    (typeof window !== "undefined" ? window.innerWidth : 0) >= 1024
+  );
   return (
     <aside className="w-full lg:w-64 bg-gray-100 flex-shrink-0 lg:h-screen">
       <div className="toolbar flex justify-between p-4 lg:mb-4">
