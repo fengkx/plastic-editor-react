@@ -6,7 +6,7 @@ import { BigCircleLoading } from "../Loading";
 
 export const Navbar: React.FC = (props) => {
   return (
-    <nav className="flex p-4 justify-end">
+    <nav className="flex p-4 justify-end items-center">
       <IsStaleIndicator />
       <div className="w-64">
         <Suspense fallback={"Loading"}>

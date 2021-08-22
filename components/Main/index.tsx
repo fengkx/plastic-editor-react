@@ -5,7 +5,7 @@ import { Note } from "../Note";
 
 export function Main() {
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col lg:flex-row">
       <LeftAside />
       <div className="flex-1 overflow scroll">
         <Navbar />

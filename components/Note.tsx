@@ -34,7 +34,7 @@ export const Note: React.FC = () => {
   const references = {};
 
   return (
-    <div className="mt-4 mx-48">
+    <div className="mt-4 mx-6 lg:mx-48">
       <div>
         <Title />
       </div>
