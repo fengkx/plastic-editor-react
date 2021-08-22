@@ -21,7 +21,7 @@ const LoginPage: NextPage = () => {
   const handleSignIn = useCallback(
     async (ev) => {
       ev.preventDefault();
-      await signIn({ email, password, redirectTo: window.location.origin });
+      await signIn({ email, password });
     },
     [email, password, signIn]
   );
