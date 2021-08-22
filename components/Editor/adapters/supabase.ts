@@ -69,15 +69,6 @@ const pageStorage: SimpleStorage<
     return dbValue?.content ?? null;
   },
   setItem: async (id, value) => {
-    const { is_public = false, is_writable = false } = value;
-    await supabase.from<definitions["page_metas"]>("page_metas").upsert(
-      {
-        page_id: id,
-        is_public,
-        is_writable,
-      },
-      { onConflict: "page_id" }
-    );
     const page: Page = {
       children: value.children,
       title: value.title,
@@ -203,6 +194,14 @@ const newPageAtom = atom<
   }
 >(null, async (get, set, update) => {
   const { newPageId, title, children, goto } = update;
+  await supabase.from<definitions["page_metas"]>("page_metas").upsert(
+    {
+      page_id: newPageId,
+      is_public: false,
+      is_writable: false,
+    },
+    { onConflict: "page_id" }
+  );
   pageFamily({ id: newPageId, title, children });
   if (goto) {
     set(pageIdAtom, newPageId);
