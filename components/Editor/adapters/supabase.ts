@@ -310,13 +310,14 @@ const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
     if (currPage) {
       set(pageFamily({ id: currPageId }), currPage.content);
     }
-    set(starsAtom, update.stars);
     ((blockResp as any).data as definitions["blocks"][])
       .filter((b) => b.content.pageId === currPageId)
       .forEach((b) => {
         set(blockFamily({ id: b.block_id!, pageId: currPageId }), b.content);
       });
-    set(starsAtom, update.stars);
+    const stared = get(starsAtom);
+    const newStars = new Set([...stared, ...(update.stars ?? [])]);
+    set(starsAtom, [...newStars]);
   });
 });
 
