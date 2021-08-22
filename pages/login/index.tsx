@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import NotFound from "../../components/404";
 import { hasSupabase, supabase } from "../../db";
-import { Toaster } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { useAuth } from "../../hooks/signin-signout";
 import { GitHubLoginButton } from "../../components/social-buttons/GitHubLoginButton";
 import { GoogleLoginButton } from "../../components/social-buttons/GoogleLoginButton";
@@ -17,14 +17,6 @@ const LoginPage: NextPage = () => {
   if (isLogin) {
     router.push("/");
   }
-
-  const handleSignIn = useCallback(
-    async (ev) => {
-      ev.preventDefault();
-      await signIn({ email, password });
-    },
-    [email, password, signIn]
-  );
   return (
     <div className="max-w-3xl mx-auto items-center flex text-center h-screen flex-col justify-center">
       <Toaster />
@@ -36,7 +28,7 @@ const LoginPage: NextPage = () => {
           onClick={useCallback(async () => {
             await signIn({
               provider: "github",
-              redirectTo: window.location.href,
+              redirectTo: window.location.origin,
             });
           }, [signIn])}
         />
@@ -44,7 +36,7 @@ const LoginPage: NextPage = () => {
           onClick={useCallback(async () => {
             await signIn({
               provider: "google",
-              redirectTo: window.location.href,
+              redirectTo: window.location.origin,
             });
           }, [signIn])}
         />
