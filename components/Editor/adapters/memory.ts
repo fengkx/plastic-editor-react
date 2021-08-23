@@ -11,13 +11,18 @@ import { atom, useAtom } from "jotai";
 import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
 import { nanoid } from "nanoid";
 import { NextRouter } from "next/router";
-import { atomWithDebouncedStorage } from "../../../atom-util/atomWithDebouncedStorage";
+import {
+  atomWithDebouncedStorage,
+  createJSONStorage,
+  Storage,
+} from "../../../atom-util/atomWithDebouncedStorage";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 import { Note, PartialPick } from "./types";
 
 export const ID_LEN = 15;
 const DEBOUNCE_WAIT = 500;
 const DEBOUNCE_MAX_WAIT = 2000;
+export const storage = createJSONStorage(() => localStorage);
 
 const isStaleAtom = atom(false);
 
@@ -32,12 +37,14 @@ const defaultPageIdFromRoute = () => {
 };
 
 const pageIdAtom = atomWithDefault(defaultPageIdFromRoute);
+export const pagesKey = "plastic@pages";
 const pagesAtom = atomWithDebouncedStorage<Record<string, Page>>(
-  "plastic@pages",
+  pagesKey,
   {},
   isStaleAtom,
   DEBOUNCE_WAIT,
-  { maxWait: DEBOUNCE_MAX_WAIT }
+  { maxWait: DEBOUNCE_MAX_WAIT },
+  storage as Storage<Record<string, Page>>
 );
 export const pageDefault = (id: string): Page => ({
   id,
@@ -92,12 +99,15 @@ export const blockDefault = (id: string, pageId: string): Block => ({
   content: "",
   references: [],
 });
+
+export const blocksKey = "plastic@blocks";
 const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
-  "plastic@blocks",
+  blocksKey,
   {},
   isStaleAtom,
   DEBOUNCE_WAIT,
-  { maxWait: DEBOUNCE_MAX_WAIT }
+  { maxWait: DEBOUNCE_MAX_WAIT },
+  storage as Storage<Record<string, Block>>
 );
 const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
@@ -129,12 +139,14 @@ const blockFamily = atomFamily<
   (a, b) => a.id === b.id && a.pageId === b.pageId
 );
 
+export const starsKey = "plastic@stars";
 const starsAtom = atomWithDebouncedStorage<string[]>(
-  "plastic@stars",
+  starsKey,
   [],
   isStaleAtom,
   DEBOUNCE_WAIT,
-  { maxWait: DEBOUNCE_MAX_WAIT }
+  { maxWait: DEBOUNCE_MAX_WAIT },
+  storage as Storage<string[]>
 );
 const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
   null,

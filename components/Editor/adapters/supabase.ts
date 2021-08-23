@@ -4,6 +4,10 @@ import {
   memoryAdapter,
   pageDefault,
   todayPageUpdate,
+  starsKey,
+  pagesKey,
+  blocksKey,
+  storage,
 } from "./memory";
 import { atomFamily, useAtomValue } from "jotai/utils";
 import {
@@ -17,7 +21,6 @@ import { supabase } from "../../../db";
 import { definitions } from "../../../types/supabase";
 import {
   atomWithDebouncedStorage,
-  createJSONStorage,
   SimpleStorage,
   Storage,
 } from "../../../atom-util/atomWithDebouncedStorage";
@@ -46,6 +49,9 @@ const blockStoarge: SimpleStorage<Block> = {
     return dbValue?.content ?? null;
   },
   setItem: async (id, value) => {
+    const localValue = storage.getItem(blocksKey) as Record<string, Block>;
+    localValue[id] = value;
+    storage.setItem(blocksKey, localValue);
     await supabase.from<definitions["blocks"]>("blocks").upsert(
       {
         block_id: id,
@@ -74,6 +80,9 @@ const pageStorage: SimpleStorage<
       title: value.title,
       id: id,
     };
+    const localValue = storage.getItem(pagesKey) as Record<string, Page>;
+    localValue[id] = page;
+    storage.setItem(pagesKey, localValue);
     await supabase.from<definitions["page_content"]>("page_content").upsert(
       {
         page_id: id,
@@ -146,6 +155,7 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
       return dbValue;
     },
     async setItem(key, newVal) {
+      storage.setItem(starsKey, newVal);
       const resp = await supabase.from<definitions["stars"]>("stars").upsert(
         {
           content: newVal,

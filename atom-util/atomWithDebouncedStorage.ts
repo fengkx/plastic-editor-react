@@ -34,15 +34,13 @@ export const createJSONStorage = <T extends any>(
   },
 });
 
-const defaultStorage = createJSONStorage(() => localStorage);
-
 export function atomWithDebouncedStorage<Value>(
   key: string,
   initialValue: Value,
   isStaleAtom: WritableAtom<boolean, boolean>,
   wait: number,
   debounceOptions: Parameters<typeof _debounce>[2],
-  storage: Storage<Value> = defaultStorage as Storage<Value>,
+  storage: Storage<Value>,
   fallback: boolean = false
 ): PrimitiveAtom<Value> {
   const getInitialValue = () => {
