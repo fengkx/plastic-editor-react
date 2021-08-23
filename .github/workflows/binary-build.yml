@@ -52,12 +52,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y webkit2gtk-4.0
+      - name: Output auto relase tag
+        id: auto-release-tag
+        shell: bash
+        run: |
+          unset BRANCH_NAME
+          BRANCH_NAME=`git branch --show-current`
+          echo "BRANCH_NAME: $BRANCH_NAME"
+          SHA_TAG=`echo $GITHUB_SHA | head -c 7`
+          echo "SHA_TAG: $SHA_TAG"
+          echo ::set-output name=RELEASE_TAG::${BRANCH_NAME}-${SHA_TAG}
       - name: Build binary
         uses: tauri-apps/tauri-action@v0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: "plastic-editor v__VERSION__"
+          tagName: ${{ steps.auto-release-tag.outputs.RELEASE_TAG }}
+          releaseName: plastic-editor auto release ${{ steps.auto-release-tag.outputs.RELEASE_TAG }}
           releaseDraft: true
           prerelease: true
