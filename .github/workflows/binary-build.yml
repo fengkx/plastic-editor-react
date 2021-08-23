@@ -59,6 +59,5 @@ jobs:
         with:
           tagName: plastic-editor-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
           releaseName: "plastic-editor v__VERSION__"
-          body: "See the assets to download this version and install."
-          draft: true
+          releaseDraft: true
           prerelease: false
