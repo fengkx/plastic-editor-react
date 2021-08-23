@@ -146,9 +146,12 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
       return dbValue;
     },
     async setItem(key, newVal) {
-      const resp = await supabase.from<definitions["stars"]>("stars").upsert({
-        content: newVal,
-      });
+      const resp = await supabase.from<definitions["stars"]>("stars").upsert(
+        {
+          content: newVal,
+        },
+        { onConflict: "owner_id" }
+      );
     },
   }
 );

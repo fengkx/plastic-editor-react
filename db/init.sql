@@ -22,7 +22,7 @@ create table blocks (
 
 create table stars (
                        id bigserial primary key,
-                       owner_id uuid,
+                       owner_id uuid unique,
                        content jsonb not null
 );
 
