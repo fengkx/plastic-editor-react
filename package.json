@@ -15,6 +15,7 @@
     "@plastic-editor/protocol": "^0.0.6",
     "@react-hookz/web": "^7.0.0",
     "@supabase/supabase-js": "^1.22.2",
+    "@tauri-apps/api": "^1.0.0-beta.6",
     "clsx": "^1.1.1",
     "date-fns": "^2.23.0",
     "fast-deep-equal": "^3.1.3",
@@ -35,6 +36,7 @@
     "tinykeys": "^1.2.0"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.0.0-beta.9",
     "@types/file-saver": "^2.0.3",
     "@types/lodash.debounce": "^4.0.6",
     "@types/react": "^17.0.19",

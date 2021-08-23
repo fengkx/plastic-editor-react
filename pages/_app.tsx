@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Provider>
       <Head>
         <title>Plastic editor react</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <Component {...pageProps} />
     </Provider>
