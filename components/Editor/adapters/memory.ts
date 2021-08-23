@@ -253,13 +253,13 @@ const saveNotesAtom = atom(null, (get) => {
 const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
   set(
     pagesAtom,
-    update.pages.reduce((acc, cur) => {
+    update.pages.reduce<Record<string, Page>>((acc, cur) => {
       acc[cur.id] = cur;
       return acc;
     }, {})
   );
   set(blocksAtom, update.blocks);
-  set(starsAtom, update.stars);
+  set(starsAtom, update.stars ?? []);
 });
 
 const usePage = () => {

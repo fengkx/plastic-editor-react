@@ -1,3 +1,4 @@
+import { MouseEventHandler } from "react";
 import Link from "next/link";
 
 export type PropsType = {
@@ -5,7 +6,7 @@ export type PropsType = {
   alt: string;
 };
 
-const stopPropagation = (ev) => {
+const stopPropagation: MouseEventHandler<HTMLAnchorElement> = (ev) => {
   ev.stopPropagation();
 };
 export const HyperLink: React.FC<PropsType> = ({ url, alt }) => (

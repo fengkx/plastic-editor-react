@@ -28,7 +28,7 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
   const focusTextHelper =
     (token: Token) =>
     (offset: number = 0) =>
-    (ev) => {
+    (ev: MouseEvent) => {
       const selection = window.getSelection();
       setAnchorOffset((selection?.anchorOffset ?? 0) + token.position + offset);
     };

@@ -335,7 +335,7 @@ const saveNotesAtom = atom(null, (get) => {
     const pages = (pagesResp.data ?? []).map((p) => p.content);
     const blocks = (blocksResp.data ?? [])
       .map((b) => b.content)
-      .reduce((acc, cur) => {
+      .reduce<Record<string, Block>>((acc, cur) => {
         acc[cur.id] = cur;
         return acc;
       }, {});

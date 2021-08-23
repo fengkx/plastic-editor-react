@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMountEffect } from "@react-hookz/web";
 
-export default function NotePage(props) {
+export default function NotePage() {
   const router = useRouter();
   useMountEffect(() => {
     if (/^(?:zh|zh-CN)$/.test(navigator.language)) {
