@@ -1,0 +1,54 @@
+name: Binary build
+on:
+  - push
+  - pull_request_target
+
+jobs:
+  publish-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, window-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+          run_install: true
+      - name: Build static
+        shell: bash
+        id: build-static
+        run: |
+          export NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          export NEXT_PUBLIC_SUPABSE_PUBLIC_ANON_KEY=${{ secrets.SUPABSE_PUBLIC_ANON_KEY }}
+          pnpm run build
+          pnpm run export
+      - name: install Rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+      - name: install webkit2gtk (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webkit2gtk-4.0
+      - name: Build binary
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: plastic-editor-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          releaseName: "plastic-editor v__VERSION__"
+          body: "See the assets to download this version and install."
+          draft: true
+          prerelease: false
