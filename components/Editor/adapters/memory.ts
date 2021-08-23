@@ -27,9 +27,8 @@ const defaultPageIdFromRoute = () => {
       /\/note\/([^\/]+)?\/?/
     ) ?? [""];
     return matches![1] as string;
-  } else {
-    return "";
   }
+  return "";
 };
 
 const pageIdAtom = atomWithDefault(defaultPageIdFromRoute);

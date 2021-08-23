@@ -1,6 +1,74 @@
 {
   "extends": "next",
   "rules": {
-    "no-return-await": "error"
+    "no-return-await": "error",
+    "array-callback-return": ["error", { "allowImplicit": true }],
+    "block-scoped-var": "error",
+    "dot-notation": ["error", { "allowKeywords": true }],
+    "dot-location": ["error", "property"],
+    "guard-for-in": "error",
+    "no-caller": "error",
+    "no-constructor-return": "error",
+    "no-else-return": ["error", { "allowElseIf": false }],
+    "no-empty-pattern": "error",
+    "no-native-reassign": "error",
+    "no-implicit-globals": "error",
+    "no-new-wrappers": "error",
+    "no-new-func": "error",
+    "no-octal-escape": "error",
+    "no-return-assign": ["error", "always"],
+    "wrap-iife": ["error", "outside", { "functionPrototypeMethods": false }],
+    "no-self-compare": "error",
+    "no-restricted-properties": [
+      "error",
+      {
+        "object": "arguments",
+        "property": "callee",
+        "message": "arguments.callee is deprecated"
+      },
+      {
+        "object": "global",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "self",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "window",
+        "property": "isFinite",
+        "message": "Please use Number.isFinite instead"
+      },
+      {
+        "object": "global",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "object": "self",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "object": "window",
+        "property": "isNaN",
+        "message": "Please use Number.isNaN instead"
+      },
+      {
+        "property": "__defineGetter__",
+        "message": "Please use Object.defineProperty instead."
+      },
+      {
+        "property": "__defineSetter__",
+        "message": "Please use Object.defineProperty instead."
+      },
+      {
+        "object": "Math",
+        "property": "pow",
+        "message": "Use the exponentiation operator (**) instead."
+      }
+    ]
   }
 }
