@@ -2,3 +2,5 @@
 node_modules/
 out
 .idea
+src-tauri/target
+.github/workflows/binary-build.yml
