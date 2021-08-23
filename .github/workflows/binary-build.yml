@@ -42,13 +42,3 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y webkit2gtk-4.0
-      - name: Build binary
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: plastic-editor-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: "plastic-editor v__VERSION__"
-          body: "See the assets to download this version and install."
-          draft: true
-          prerelease: false
