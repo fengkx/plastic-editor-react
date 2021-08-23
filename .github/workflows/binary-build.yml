@@ -1,0 +1,73 @@
+name: Binary build
+on:
+  - push
+  - pull_request_target
+
+jobs:
+  publish-tauri:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+          run_install: true
+      - name: Build static
+        shell: bash
+        id: build-static
+        run: |
+          export NEXT_PUBLIC_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+          export NEXT_PUBLIC_SUPABSE_PUBLIC_ANON_KEY=${{ secrets.SUPABASE_PUBLIC_ANON_KEY }}
+          pnpm run build
+          pnpm run export
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            src-tauri/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: install Rust nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - name: install webkit2gtk (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webkit2gtk-4.0
+      - name: Output auto relase tag
+        id: auto-release-tag
+        shell: bash
+        run: |
+          unset BRANCH_NAME
+          BRANCH_NAME=`git branch --show-current`
+          echo "BRANCH_NAME: $BRANCH_NAME"
+          SHA_TAG=`echo $GITHUB_SHA | head -c 7`
+          echo "SHA_TAG: $SHA_TAG"
+          echo ::set-output name=RELEASE_TAG::${BRANCH_NAME}-${SHA_TAG}
+      - name: Build binary
+        uses: tauri-apps/tauri-action@v0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ steps.auto-release-tag.outputs.RELEASE_TAG }}
+          releaseName: plastic-editor auto release ${{ steps.auto-release-tag.outputs.RELEASE_TAG }}
+          releaseDraft: true
+          prerelease: true
