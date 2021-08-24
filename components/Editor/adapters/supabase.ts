@@ -374,7 +374,18 @@ const gotoPageAtom = atom<null, todayPageUpdate>(
         .from("page_content")
         .select("page_id")
         .eq("content->>title", title);
-      id = resp?.data?.[0]?.page_id ?? nanoid(ID_LEN);
+      const page: Pick<definitions["page_content"], "page_id"> =
+        resp?.data?.[0];
+      if (!page) {
+        id = nanoid(ID_LEN);
+        set(newPageAtom, {
+          newPageId: id,
+          title,
+        });
+      } else {
+        id = page.page_id!;
+      }
+
       path = `/note/${id}`;
     } else {
       id = update.id;
