@@ -44,7 +44,10 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
         }
       `}</style>
       <div
-        className={clsx("preview", "flex-1", "cursor-text", className)}
+        className={clsx(
+          "preview flex-1 cursor-text whitespace-pre-wrap",
+          className
+        )}
         onClick={focusCallback}
       >
         {parsed.map((token) => {

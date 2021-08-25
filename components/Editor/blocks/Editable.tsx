@@ -9,16 +9,12 @@ import {
 import clsx from "clsx";
 import produce from "immer";
 import { useAtom } from "jotai";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
-import { useEffect, useRef } from "react";
+import { useUpdateAtom } from "jotai/utils";
+import { useCallback, useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
 import { useNanoid } from "../../../hooks/useNanoid";
 import { useAdapter } from "../adapters/AdapterContext";
-import {
-  anchorOffsetAtom,
-  editingBlockIdAtom,
-  LINE_HEIGHT_ATOM,
-} from "../store";
+import { anchorOffsetAtom, editingBlockIdAtom } from "../store";
 
 const leftBrackets = ["[", "{"];
 const rightBracketsMap = { "[": "]", "{": "}" } as const;
@@ -58,7 +54,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   useKeyboardEvent(
     "Enter",
     (ev) => {
-      if (!shouldCreateNewBlockRef.current) return;
+      if (!shouldCreateNewBlockRef.current || ev.shiftKey) return;
       const textArea = textareaRef.current!;
       if (textArea.selectionStart === 0 && textArea.value.length > 0) {
         addNewBlock({
@@ -214,6 +210,18 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
     undefined,
     { target: textareaRef }
   );
+  const resize = useCallback((target: HTMLTextAreaElement) => {
+    target.style.height = "1px";
+    target.style.height = +target.scrollHeight + "px";
+  }, []);
+  useEventListener(
+    textareaRef,
+    "input",
+    (ev) => {
+      resize(ev.target);
+    },
+    { passive: true }
+  );
   useMountEffect(() => {
     const textArea = textareaRef.current!;
     setTimeout(() => {
@@ -224,6 +232,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       );
       shouldDeleteBlockRef.current = textArea.value.length === 0;
     }, 0);
+    resize(textArea);
   });
   useClickOutside(textareaRef, () => {
     setAnchorOffset(Infinity);
@@ -265,10 +274,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
         ref={textareaRef}
         onChange={(ev) => {
           let { value } = ev.target;
-          if (value.endsWith("\n")) {
-            value = value.substring(0, value.length - 1);
-            ev.target.value = value;
-          }
           setAnchorOffset(value.length);
           setBlock(
             produce(block, (draft) => {
@@ -286,7 +291,6 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
           "overflow-hidden",
           className
         )}
-        style={{ height: useAtomValue(LINE_HEIGHT_ATOM) }}
       />
     </>
   );
