@@ -404,6 +404,7 @@ const gotoPageAtom = atom<null, todayPageUpdate>(
 );
 
 export const supbaseAdapter: TSupabaseAdapter = {
+  $$type: "supabase",
   isStaleAtom,
   newPageAtom,
   newBlockAtom,

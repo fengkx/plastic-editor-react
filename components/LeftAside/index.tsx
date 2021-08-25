@@ -9,7 +9,8 @@ import { ToolButton } from "./ToolButton";
 import { DotFlashing } from "../Loading";
 import { hasSupabase, supabase } from "../../db";
 import clsx from "clsx";
-import { useMountEffect, useToggle } from "@react-hookz/web";
+import { useToggle } from "@react-hookz/web";
+
 export const LeftAside: React.FC = () => {
   const router = useRouter();
   const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
@@ -92,7 +93,7 @@ export const LeftAside: React.FC = () => {
                   imgHeight={24}
                   onClick={async () => {
                     await supabase.auth.signOut();
-                    router.reload();
+                    setTimeout(router.reload, 0);
                   }}
                 />
               ) : (

@@ -314,6 +314,7 @@ const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
 });
 
 export const memoryAdapter = {
+  $$type: "memory" as "memory" | "supabase",
   pageFamily,
   pageIdAtom,
   pagesAtom,
