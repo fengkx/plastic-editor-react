@@ -19,11 +19,9 @@ specifiers:
   file-saver: ^2.0.5
   immer: ^9.0.5
   jotai: ^1.3.1
-  js-cookie: ^2.2.1
   lodash.debounce: ^4.0.8
   nanoid: ^3.1.25
   next: ^11.1.0
-  optics-ts: ^2.1.0
   postcss: ^8.3.6
   prettier: ^2.3.2
   prettier-plugin-organize-imports: ^2.3.3
@@ -42,7 +40,7 @@ specifiers:
 dependencies:
   "@next/bundle-analyzer": 11.1.0
   "@plastic-editor/protocol": 0.0.6
-  "@react-hookz/web": 7.0.0_98d5223585ee091105494cce64fa9dbd
+  "@react-hookz/web": 7.0.0_b9a6e38cc1a1dea4d265c2bc3558e6fb
   "@supabase/supabase-js": 1.22.3
   "@tauri-apps/api": 1.0.0-beta.8
   clsx: 1.1.1
@@ -50,12 +48,10 @@ dependencies:
   fast-deep-equal: 3.1.3
   file-saver: 2.0.5
   immer: 9.0.5
-  jotai: 1.3.1_c1c636778797682976483fd43b14236f
-  js-cookie: 2.2.1
+  jotai: 1.3.1_053ae934efdcb6883c43a007c4a507ec
   lodash.debounce: 4.0.8
   nanoid: 3.1.25
   next: 11.1.0_3eff8c9620e942ef9e2f7dd6ec9bf3e0
-  optics-ts: 2.1.0
   react: 18.0.0-alpha-edfe50510-20210823
   react-dnd: 14.0.3_66d38552616c5c38071d521faf30824d
   react-dnd-html5-backend: 14.0.1
@@ -402,7 +398,7 @@ packages:
       }
     dev: false
 
-  /@react-hookz/web/7.0.0_98d5223585ee091105494cce64fa9dbd:
+  /@react-hookz/web/7.0.0_b9a6e38cc1a1dea4d265c2bc3558e6fb:
     resolution:
       {
         integrity: sha512-RlVxSQFxrUJ5FhlKD7M8Vi6igKIphLObsudTTmco9UZ4PMl5vXdsW/ePajdpj9RxWA+RIAugSy8NLxP1LmK+Rg==,
@@ -418,7 +414,6 @@ packages:
       "@types/js-cookie": 2.2.7
       "@types/react": 17.0.19
       "@types/react-dom": 17.0.9
-      js-cookie: 2.2.1
       react: 18.0.0-alpha-edfe50510-20210823
       react-dom: 18.0.0-alpha-edfe50510-20210823_04db1d1c2ad077c95e37d47a70ed6937
     dev: false
@@ -4622,7 +4617,7 @@ packages:
       supports-color: 8.1.1
     dev: false
 
-  /jotai/1.3.1_c1c636778797682976483fd43b14236f:
+  /jotai/1.3.1_053ae934efdcb6883c43a007c4a507ec:
     resolution:
       {
         integrity: sha512-kxBCafmsO8v3Tc02LwElkCa2cVfuKfGsKG8A1TrTiWV2ygfNqdleh6lf0GrWE7BxRYCE1WoTJQMoa3IHkyabKg==,
@@ -4654,15 +4649,7 @@ packages:
         optional: true
     dependencies:
       immer: 9.0.5
-      optics-ts: 2.1.0
       react: 18.0.0-alpha-edfe50510-20210823
-    dev: false
-
-  /js-cookie/2.2.1:
-    resolution:
-      {
-        integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==,
-      }
     dev: false
 
   /js-tokens/4.0.0:
@@ -5663,13 +5650,6 @@ packages:
         integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==,
       }
     hasBin: true
-    dev: false
-
-  /optics-ts/2.1.0:
-    resolution:
-      {
-        integrity: sha512-SJIwf16fwyo9+O+x303BifrWZ/H6Du/hS1zz4UERYt9BaRvxBID9XCYZlQ3c2aIrqeG64AxLcRy8VC/OYUkS9A==,
-      }
     dev: false
 
   /optionator/0.9.1:

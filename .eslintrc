@@ -69,6 +69,8 @@
         "property": "pow",
         "message": "Use the exponentiation operator (**) instead."
       }
-    ]
+    ],
+    "import/no-unresolved": "error",
+    "import/no-unused-modules": "error"
   }
 }
