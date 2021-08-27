@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import Link from "next/link";
 
 export type PropsType = {
@@ -8,14 +9,20 @@ export type PropsType = {
 const stopPropagation = (ev) => {
   ev.stopPropagation();
 };
-export const HyperLink: React.FC<PropsType> = ({ url, alt }) => (
-  <Link href={url}>
-    <a
-      className="text-blue-600 hover:underline"
-      href={url}
-      onClickCapture={stopPropagation}
-    >
-      {alt}
-    </a>
-  </Link>
+
+export const HyperLink = forwardRef<HTMLAnchorElement, PropsType>(
+  function HyperLink({ url, alt }, ref) {
+    return (
+      <Link href={url}>
+        <a
+          ref={ref}
+          className="text-blue-600 hover:underline"
+          href={url}
+          onClickCapture={stopPropagation}
+        >
+          {alt}
+        </a>
+      </Link>
+    );
+  }
 );

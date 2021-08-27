@@ -1,7 +1,7 @@
 import { AdapterProvider } from "../../components/Editor/adapters/AdapterContext";
 import { memoryAdapter } from "../../components/Editor/adapters/memory";
 import { useCurrentPageId } from "../../components/Editor/hooks";
-import { Main } from "../../components/Main";
+import { MindMap } from "../../components/MindMap";
 
 export default function NotePage(props) {
   const pageId = useCurrentPageId("pageId");
@@ -10,7 +10,7 @@ export default function NotePage(props) {
   }
   return (
     <AdapterProvider>
-      <Main />
+      <MindMap />
     </AdapterProvider>
   );
 }

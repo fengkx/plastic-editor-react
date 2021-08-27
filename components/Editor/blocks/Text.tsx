@@ -1,3 +1,15 @@
-export function Text({ children, focusTextHelper }) {
-  return <span onClickCapture={focusTextHelper(0)}>{children}</span>;
-}
+import { forwardRef, ReactNode, MouseEventHandler } from "react";
+
+export const Text = forwardRef<
+  HTMLElement,
+  {
+    children?: ReactNode;
+    focusTextHelper: (offset: number) => MouseEventHandler<HTMLElement>;
+  }
+>(function Text({ children, focusTextHelper }, ref) {
+  return (
+    <span ref={ref} onClickCapture={focusTextHelper(0)}>
+      {children}
+    </span>
+  );
+});

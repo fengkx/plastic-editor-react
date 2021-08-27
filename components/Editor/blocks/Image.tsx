@@ -1,4 +1,10 @@
-export const Image: React.FC<{ url: string; alt: string }> = ({ url, alt }) => (
-  // eslint-disable-next-line  @next/next/no-img-element
-  <img src={url} alt={alt} className="max-w-full" />
+import { forwardRef } from "react";
+
+export const Image = forwardRef<HTMLImageElement, { url: string; alt: string }>(
+  function Image({ url, alt }, ref) {
+    return (
+      // eslint-disable-next-line  @next/next/no-img-element
+      <img ref={ref} src={url} alt={alt} className="max-w-full" />
+    );
+  }
 );
