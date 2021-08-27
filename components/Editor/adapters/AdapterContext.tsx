@@ -39,10 +39,10 @@ export const AdapterProvider: React.FC<PropsType> = ({ children, adapter }) => {
   useEffect(() => {
     if (hasSupabase) {
       const session = supabase.auth.session();
-      const adapter = Boolean(session) ? supbaseAdapter : memoryAdapter;
-      setAdapterState(adapter);
+      const realAdapter = Boolean(session) ? supbaseAdapter : memoryAdapter;
+      setAdapterState(realAdapter);
     }
-  });
+  }, [adapter]);
   return (
     <AdapterContext.Provider value={adapterState}>
       {children}
