@@ -1,12 +1,11 @@
 import React, { useMemo, Suspense, useEffect, useState, useRef } from "react";
-import { useRafCallback, useRerender } from "@react-hookz/web";
 import { Group } from "@visx/group";
-import { Tree, hierarchy } from "@visx/hierarchy";
+import { Tree, Cluster, Pack, hierarchy } from "@visx/hierarchy";
 import { HierarchyPointNode } from "@visx/hierarchy/lib/types";
-import { LinkHorizontalStep } from "@visx/shape";
-import { LinearGradient } from "@visx/gradient";
+import { LinkHorizontalStep, LinkHorizontal } from "@visx/shape";
 import { Preview } from "../Block/Preview";
-import { withScreenSize } from "@visx/responsive";
+import { ParentSize } from "@visx/responsive";
+import { Zoom } from "@visx/zoom";
 
 const peach = "#fd9b93";
 const pink = "#fe6e9e";
@@ -17,7 +16,7 @@ const lightpurple = "#374469";
 const white = "#ffffff";
 export const background = "#272b4d";
 
-interface TreeNode {
+export interface TreeNode {
   id: string;
   title?: string;
   children?: this[];
@@ -25,93 +24,14 @@ interface TreeNode {
 
 type HierarchyNode = HierarchyPointNode<TreeNode>;
 
-const rawTree: TreeNode = {
-  id: "XDBOwomABiDodX2",
-  title: "D3 note",
-  children: [
-    {
-      id: "LJoE-cYdpHA7U0z",
-      children: [],
-    },
-    {
-      id: "XDBOwomABiDodX2",
-      children: [
-        {
-          id: "APf8DMcG0GlA0iv",
-          children: [],
-        },
-        {
-          id: "x4r7zUQJQXSGEY8",
-          children: [],
-        },
-        {
-          id: "IshE3JxcPTAs5vb",
-          children: [],
-        },
-        {
-          id: "RyIa3LWjrOKDP7R",
-          children: [
-            {
-              id: "mFVkDk2PNhpWmEf",
-              children: [],
-            },
-            {
-              id: "9xrvxbb0EvoSQfn",
-              children: [],
-            },
-            {
-              id: "ff0kjQI9xIZX3OK",
-              children: [],
-            },
-          ],
-        },
-        {
-          id: "p9FVEagBuxbfh22",
-          children: [
-            {
-              id: "1bhj8V25LqStWbW",
-              children: [],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
-
 /** Handles rendering Root, Parent, and other Nodes. */
 function Node({ node }: { node: HierarchyNode }) {
-  const width = 40;
-  const height = 20;
-  const centerX = -width / 2;
-  const centerY = -height / 2;
-  const isRoot = node.depth === 0;
-  const isParent = !!node.children;
-
-  if (isRoot) return <ParentNode node={node} />;
-  if (isParent) return <ParentNode node={node} />;
+  const width = 5000;
+  const height = 5000;
 
   return (
     <Group top={node.x} left={node.y}>
       <DynamicPreview width={width} height={height} node={node} />
-    </Group>
-  );
-}
-
-function RootNode({ node }: { node: HierarchyNode }) {
-  return (
-    <Group top={node.x} left={node.y}>
-      <circle r={12} fill="url('#lg')" />
-      <text
-        dy=".33em"
-        fontSize={9}
-        fontFamily="Arial"
-        textAnchor="middle"
-        style={{ pointerEvents: "none" }}
-        fill={plum}
-      >
-        {node.data.title ?? node.data.id}
-      </text>
     </Group>
   );
 }
@@ -122,94 +42,133 @@ function DynamicPreview(props: {
   node: HierarchyNode;
 }) {
   const { node } = props;
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-  const ref = useRef<Element>(null);
-  useEffect(() => {
+  const [height, setHeight] = useState(props.height);
+  const [width, setWidth] = useState(props.width);
+
+  const ref = useRef<HTMLElement | HTMLImageElement>(null);
+  const syncSize = () => {
     const rect = ref.current?.getBoundingClientRect();
-    setHeight(rect?.height ?? props.height);
-    setWidth(Math.max(rect?.width ?? props.width, 400));
-  });
+    const img = ref.current?.querySelector("img");
+    if (img) {
+      img.addEventListener("load", (ev) => {
+        setHeight(Math.min(img.height, 320));
+        setWidth(Math.min(img.width, 320));
+        setTimeout(() => {
+          const rect = ref.current!.getBoundingClientRect();
+          setHeight(rect.height);
+          setWidth(rect.width);
+        }, 0);
+      });
+    } else {
+      setHeight(Math.min(rect?.height ?? props.height, 320));
+      setWidth(Math.max(Math.min(rect?.width ?? props.width, 320), 120));
+    }
+  };
+  useEffect(() => {
+    syncSize();
+  }, [width, height, ref.current]);
+
+  const translate = useMemo(() => {
+    if (ref.current?.tagName === "IMG") {
+      return "";
+    }
+    return `translate(8, ${height * (node.children ? 0.25 : -0.95)})`;
+  }, [height, ref.current, node.children, node]);
   return (
-    <foreignObject height={height + 4} width={width}>
+    <foreignObject height={height + 4} width={width} transform={translate}>
       <Suspense fallback={"Loading"}>
         <Preview
           ref={ref}
           blockId={node.data.id}
-          className="break-words max-w-md"
+          className="inline-block break-words max-w-md bg-gray-100 p-2 shadow-md border border-gray-200"
         />
       </Suspense>
     </foreignObject>
   );
 }
 
-function ParentNode({ node }: { node: HierarchyNode }) {
-  const width = 40;
-  const height = 20;
-
-  return (
-    <Group top={node.x} left={node.y}>
-      <DynamicPreview width={width} height={height} node={node} />
-    </Group>
-  );
-}
-
-const defaultMargin = { top: 10, left: 80, right: 80, bottom: 10 };
+const defaultMargin = { top: 48, left: 80, right: 80, bottom: 16 };
 
 export type TreeProps = {
   width: number;
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
+  rawTree: TreeNode;
 };
 
-export const MindMap = withScreenSize(function MindMap({
-  screenWidth: width,
-  screenHeight: height,
+function MindMapTree({
+  width,
+  height,
   margin = defaultMargin,
+  rawTree,
 }: TreeProps) {
   const data = useMemo(() => hierarchy(rawTree), []);
   const yMax = height - margin.top - margin.bottom;
   const xMax = width - margin.left - margin.right;
-  console.log({ xMax, yMax });
+  const scale = 1;
   return width < 10 ? null : (
-    <svg width={width} height={height}>
-      <LinearGradient id="lg" from={peach} to={pink} />
-      <rect width={width} height={height} fill={background} />
-      <Tree<TreeNode>
-        root={data}
-        size={[982, 932]}
-        separation={(a, b) => {
-          console.log(
-            (a.parent == b.parent ? 1 : 2) / a.depth,
-            a.data.id,
-            b.data.id,
-            a.depth
-          );
-          return (a.parent == b.parent ? 3 : 4) / a.depth;
-        }}
-      >
-        {(tree) => {
-          console.log(tree.descendants());
-          return (
-            <Group top={margin.top} left={margin.left}>
-              {tree.links().map((link, i) => (
-                <LinkHorizontalStep
-                  key={`link-${i}`}
-                  data={link}
-                  stroke={lightpurple}
-                  strokeWidth="1"
-                  fill="none"
-                  percent={0.8}
-                />
-              ))}
-              {tree.descendants().map((node, i) => (
-                <Node key={`node-${i}`} node={node} />
-              ))}
-            </Group>
-          );
-        }}
-      </Tree>
-      {/* <DynamicPreview width={40} height={20} node={{data: {id: "LJoE-cYdpHA7U0z"}}} /> */}
-    </svg>
+    <Zoom<SVGSVGElement>
+      width={width}
+      height={height}
+      scaleXMin={0.5 / scale}
+      scaleYMin={0.5 / scale}
+    >
+      {(zoom) => (
+        <div className="relative">
+          <svg
+            width={width}
+            height={height}
+            ref={zoom.containerRef}
+            style={{
+              cursor: zoom.isDragging ? "grabbing" : "grab",
+              touchAction: "none",
+            }}
+          >
+            <rect fill={"#fcfcfc"} width={width} height={height} />
+            <Tree<TreeNode>
+              root={data}
+              size={[yMax * scale, xMax * scale]}
+              separation={(a, b) => {
+                return (a.parent == b.parent ? 0.2 : 0.1) * a.depth;
+              }}
+            >
+              {(tree) => {
+                return (
+                  <Group transform={zoom.toString()}>
+                    {tree.links().map((link, i) => (
+                      <LinkHorizontalStep
+                        key={`link-${i}`}
+                        data={link}
+                        stroke={"#333"}
+                        strokeWidth="2"
+                        fill="none"
+                        percent={0.9}
+                      />
+                    ))}
+                    {tree.descendants().map((node, i) => (
+                      <Node key={`node-${i}`} node={node} />
+                    ))}
+                  </Group>
+                );
+              }}
+            </Tree>
+          </svg>
+        </div>
+      )}
+    </Zoom>
   );
-});
+}
+
+export const MindMap: React.FC<{ tree: TreeNode }> = ({ tree }) => {
+  return (
+    <ParentSize>
+      {(parent) => (
+        <MindMapTree
+          width={parent.width}
+          rawTree={tree}
+          height={parent.height}
+        />
+      )}
+    </ParentSize>
+  );
+};
