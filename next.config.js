@@ -5,6 +5,5 @@ module.exports = withBundleAnalyzer({
   experimental: {
     reactRoot: true,
     esmExternals: "true",
-    concurrentFeatures: true,
   },
 });

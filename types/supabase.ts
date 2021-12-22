@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 import { Page, Block } from "@plastic-editor/protocol/lib/protocol";
-import { namedTypes } from "ast-types";
+// import { namedTypes } from "ast-types";
 
 export interface paths {
   "/": {

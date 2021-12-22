@@ -30,7 +30,7 @@ export const LeftAside: React.FC = () => {
     (typeof window !== "undefined" ? window.innerWidth : 0) >= 1024
   );
   return (
-    <aside className="w-full lg:w-64 bg-gray-100 flex-shrink-0 lg:h-screen">
+    <aside className="w-full lg:w-64 bg-gray-100 flex-shrink-0 sticky top-0 lg:h-screen">
       <div className="toolbar flex justify-between p-4 lg:mb-4">
         <div className="flex space-x-2">
           <ToolButton
