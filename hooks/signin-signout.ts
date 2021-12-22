@@ -40,12 +40,12 @@ export function useAuth({ supabase }: IUseAuth) {
         { email, password, provider },
         { redirectTo }
       );
-      const { error, data } = resp;
+      const { error, user, session } = resp;
       if (error) {
         setError(error.message);
       }
       toggleLoading(false);
-      if (data && "confirmation_sent_at" in data) {
+      if (user && !session) {
         toast("Check your email for the confirmation link.", {
           duration: 4000,
           position: "bottom-center",

@@ -417,6 +417,7 @@ export const supbaseAdapter: TSupabaseAdapter = {
   useBlock,
   moveBlockAtom,
   deleteBlockAtom,
+  // @ts-expect-error Supabase adapter is async
   pageValuesAtom,
   loadNotesAtom,
   saveNotesAtom,
