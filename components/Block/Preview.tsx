@@ -1,3 +1,4 @@
+import { Block } from "@plastic-editor/protocol/lib/protocol";
 import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
@@ -32,7 +33,7 @@ const PreviewImpl: React.ForwardRefRenderFunction<HTMLElement, PropsType> = (
     },
     [blockId, setEditingBlockId]
   );
-  const block = useAtomValue(
+  const block = useAtomValue<Block>(
     blockFamily({ id: blockId, pageId: useAtomValue(pageIdAtom) })
   );
   const focusTextHelper =

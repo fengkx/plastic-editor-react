@@ -15,7 +15,7 @@ import {
   Page,
   ShallowBlock,
 } from "@plastic-editor/protocol/lib/protocol";
-import { atom, useAtom } from "jotai";
+import { atom, PrimitiveAtom, useAtom } from "jotai";
 import { Note, PartialPick } from "./types";
 import { supabase } from "../../../db";
 import { definitions } from "../../../types/supabase";
@@ -95,8 +95,7 @@ const pageStorage: SimpleStorage<
 };
 const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
-  Block,
-  Block
+  PrimitiveAtom<Block>
 >(
   ({ id, pageId, content }) => {
     const defaultValue = blockDefault(id, pageId);
@@ -116,8 +115,7 @@ const blockFamily = atomFamily<
 
 const pageFamily = atomFamily<
   Pick<Page, "id"> & PartialPick<Page, "children" | "title">,
-  Page,
-  Page
+  PrimitiveAtom<Page>
 >(
   ({ id, children, title }) => {
     const defaultValue = pageDefault(id);
