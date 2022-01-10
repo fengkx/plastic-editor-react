@@ -29,7 +29,7 @@ const isStaleAtom = atom(false);
 const defaultPageIdFromRoute = () => {
   if (process.browser) {
     const matches = window?.location?.pathname?.match(
-      /\/note\/([^\/]+)?\/?/
+      /\/(?:note|graph)\/([^\/]+)?\/?/
     ) ?? [""];
     return matches![1] as string;
   }

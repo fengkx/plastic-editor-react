@@ -35,7 +35,9 @@ export const Editor: React.FC<PropsType> = ({
     setPage(page);
     router.beforePopState((nextState) => {
       if (nextState.url === "/note/[pageId]") {
-        const pageId = nextState?.as?.match?.(/note\/([^\/]+)(?:\/.+)*/)?.[1];
+        const pageId = nextState?.as?.match?.(
+          /(?:note|graph)\/([^\/]+)(?:\/.+)*/
+        )?.[1];
         if (pageId) {
           setPageId(pageId);
         }

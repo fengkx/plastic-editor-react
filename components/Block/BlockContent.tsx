@@ -21,7 +21,12 @@ export const BlockContent: React.FC<PropsType> = ({
   const isEditing = editingBlockId === shallowBlock.id;
 
   if (!isEditing) {
-    return <Preview className={className} blockId={shallowBlock.id} />;
+    return (
+      <Preview
+        className={className + "  whitespace-pre-wrap"}
+        blockId={shallowBlock.id}
+      />
+    );
   }
 
   return (

@@ -3,7 +3,13 @@ import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import { nanoid } from "nanoid";
-import { memo as ReactMemo, useCallback } from "react";
+import {
+  memo as ReactMemo,
+  useCallback,
+  forwardRef,
+  CSSProperties,
+  RefObject,
+} from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { Token, tokenizer } from "../Editor/parser";
 import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
@@ -11,8 +17,12 @@ import { anchorOffsetAtom, editingBlockIdAtom } from "../Editor/store";
 export type PropsType = {
   blockId: string;
   className: string;
+  style?: CSSProperties;
 };
-const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
+const PreviewImpl: React.ForwardRefRenderFunction<HTMLElement, PropsType> = (
+  { blockId, className, style },
+  ref
+) => {
   const { blockFamily, pageIdAtom } = useAdapter();
   const setAnchorOffset = useUpdateAtom(anchorOffsetAtom);
   const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
@@ -45,11 +55,10 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
         }
       `}</style>
       <div
-        className={clsx(
-          "preview flex-1 cursor-text whitespace-pre-wrap",
-          className
-        )}
+        className={clsx("preview flex-1 cursor-text", className)}
         onClick={focusCallback}
+        ref={ref as RefObject<HTMLDivElement>}
+        style={style}
       >
         {parsed.map((token) => {
           return (
@@ -66,6 +75,7 @@ const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
   );
 };
 
-export const Preview = ReactMemo(PreviewImpl, (prevProps, nextProps) =>
-  deepEqual(prevProps, nextProps)
+export const Preview = ReactMemo(
+  forwardRef(PreviewImpl),
+  (prevProps, nextProps) => deepEqual(prevProps, nextProps)
 );
