@@ -7,7 +7,7 @@ import type {
 import { format } from "date-fns";
 import FileSaver from "file-saver";
 import produce from "immer";
-import { atom, useAtom } from "jotai";
+import { Atom, atom, PrimitiveAtom, useAtom, WritableAtom } from "jotai";
 import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
 import { nanoid } from "nanoid";
 import { NextRouter } from "next/router";
@@ -55,8 +55,7 @@ export const pageDefault = (id: string): Page => ({
 
 const pageFamily = atomFamily<
   Pick<Page, "id"> & PartialPick<Page, "children" | "title">,
-  Page,
-  Page
+  PrimitiveAtom<Page>
 >(
   ({ id, children, title }) =>
     atom(
@@ -111,8 +110,7 @@ const blocksAtom = atomWithDebouncedStorage<Record<string, Block>>(
 );
 const blockFamily = atomFamily<
   Pick<Block, "id" | "pageId"> & PartialPick<Block, "content">,
-  Block,
-  Block
+  PrimitiveAtom<Block>
 >(
   ({ id, pageId, content }) =>
     atom(
