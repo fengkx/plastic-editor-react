@@ -8,5 +8,6 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 module.exports = withBundleAnalyzer({
   experimental: {
     esmExternals: true,
+    webpackBuildWorker: true,
   },
 });
