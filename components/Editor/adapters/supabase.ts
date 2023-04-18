@@ -9,13 +9,13 @@ import {
   blocksKey,
   storage,
 } from "./memory";
-import { atomFamily, useAtomValue } from "jotai/utils";
+import { atomFamily } from "jotai/utils";
 import {
   Block,
   Page,
   ShallowBlock,
 } from "@plastic-editor/protocol/lib/protocol";
-import { atom, PrimitiveAtom, useAtom } from "jotai";
+import { atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
 import { Note, PartialPick } from "./types";
 import { supabase } from "../../../db";
 import { definitions } from "../../../types/supabase";
@@ -166,13 +166,16 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
 
 const newBlockAtom = atom<
   null,
-  {
-    newBlockId: string;
-    pageId: string;
-    path: number[];
-    content?: string;
-    op: "append" | "prepend" | "prependChild";
-  }
+  [
+    {
+      newBlockId: string;
+      pageId: string;
+      path: number[];
+      content?: string;
+      op: "append" | "prepend" | "prependChild";
+    }
+  ],
+  void
 >(null, (get, set, update) => {
   const { newBlockId, pageId, path, content } = update;
   const newBlockAtom = blockFamily({ id: newBlockId, pageId, content });
@@ -197,12 +200,15 @@ const newBlockAtom = atom<
 });
 const newPageAtom = atom<
   null,
-  {
-    newPageId: string;
-    title?: string;
-    children?: ShallowBlock[];
-    goto?: boolean;
-  }
+  [
+    {
+      newPageId: string;
+      title?: string;
+      children?: ShallowBlock[];
+      goto?: boolean;
+    }
+  ],
+  void
 >(null, async (get, set, update) => {
   const { newPageId, title, children, goto } = update;
   await supabase.from<definitions["page_metas"]>("page_metas").upsert(
@@ -219,57 +225,59 @@ const newPageAtom = atom<
   }
 });
 
-const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
+const moveBlockAtom = atom<
   null,
-  (get, set, update) => {
-    const { from, to } = update;
-    console.debug(update);
-    const pageId = get(pageIdAtom);
-    const page = get(pageFamily({ id: pageId }));
-    const pageEngine = new PageEngine(page);
-    console.debug(pageEngine.page);
-    const shallowBlock = pageEngine.access(from);
-    const [toParent] = pageEngine.accessParent(to);
-    pageEngine.remove(from);
-    toParent.children.splice(to[to.length - 1], 0, shallowBlock);
-    set(pageFamily({ id: pageId }), pageEngine.page);
-    console.debug(pageEngine.page);
-  }
-);
+  [{ from: number[]; to: number[] }],
+  void | Promise<void>
+>(null, (get, set, update) => {
+  const { from, to } = update;
+  console.debug(update);
+  const pageId = get(pageIdAtom);
+  const page = get(pageFamily({ id: pageId }));
+  const pageEngine = new PageEngine(page);
+  console.debug(pageEngine.page);
+  const shallowBlock = pageEngine.access(from);
+  const [toParent] = pageEngine.accessParent(to);
+  pageEngine.remove(from);
+  toParent.children.splice(to[to.length - 1], 0, shallowBlock);
+  set(pageFamily({ id: pageId }), pageEngine.page);
+  console.debug(pageEngine.page);
+});
 
-const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
+const deleteBlockAtom = atom<
   null,
-  (get, set, update) => {
-    const { path, blockId } = update;
-    const pageAtom = pageFamily({ id: get(pageIdAtom) });
-    const page = get(pageAtom);
-    const pageEngine = new PageEngine(page);
-    const [closest, closetPos] = pageEngine.upClosest(path);
-    pageEngine.remove(path);
-    const writeDb = async () => {
-      await supabase.from<definitions["page_content"]>("page_content").upsert(
-        {
-          page_id: page.id,
-          content: pageEngine.page,
-        },
-        { onConflict: "page_id" }
-      );
-    };
-    writeDb()
-      .then(() => {
-        set(isStaleAtom, false);
-        set(pageAtom, pageEngine.page);
-        set(anchorOffsetAtom, Infinity);
-        set(editingBlockIdAtom, closest.id);
-      })
-      .finally(() => {
-        supabase
-          .from<definitions["blocks"]>("blocks")
-          .delete()
-          .eq("block_id", blockId);
-      });
-  }
-);
+  [{ path: number[]; blockId: string }],
+  void | Promise<void>
+>(null, (get, set, update) => {
+  const { path, blockId } = update;
+  const pageAtom = pageFamily({ id: get(pageIdAtom) });
+  const page = get(pageAtom);
+  const pageEngine = new PageEngine(page);
+  const [closest, closetPos] = pageEngine.upClosest(path);
+  pageEngine.remove(path);
+  const writeDb = async () => {
+    await supabase.from<definitions["page_content"]>("page_content").upsert(
+      {
+        page_id: page.id,
+        content: pageEngine.page,
+      },
+      { onConflict: "page_id" }
+    );
+  };
+  writeDb()
+    .then(() => {
+      set(isStaleAtom, false);
+      set(pageAtom, pageEngine.page);
+      set(anchorOffsetAtom, Infinity);
+      set(editingBlockIdAtom, closest.id);
+    })
+    .finally(() => {
+      supabase
+        .from<definitions["blocks"]>("blocks")
+        .delete()
+        .eq("block_id", blockId);
+    });
+});
 
 const usePage = () => {
   return useAtom(pageFamily({ id: useAtomValue(pageIdAtom) }));
@@ -286,50 +294,53 @@ const pageValuesAtom = atom(async (get) => {
   return resp.data?.map((item) => item.content) ?? [];
 });
 
-const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
-  const loadNote = async () => {
-    await supabase.from<definitions["page_metas"]>("page_metas").upsert(
-      update.pages.map((p) => ({ page_id: p.id })),
-      { onConflict: "page_id" }
-    );
-    const promises = [
-      supabase.from<definitions["page_content"]>("page_content").upsert(
-        update.pages.map((p) => ({
-          page_id: p.id,
-          content: p,
-        })),
+const loadNotesAtom = atom<null, [Note], void | Promise<void>>(
+  null,
+  (get, set, update) => {
+    const loadNote = async () => {
+      await supabase.from<definitions["page_metas"]>("page_metas").upsert(
+        update.pages.map((p) => ({ page_id: p.id })),
         { onConflict: "page_id" }
-      ),
-      supabase.from<definitions["blocks"]>("blocks").upsert(
-        Object.values(update.blocks).map((b) => ({
-          block_id: b.id,
-          content: b,
-        })),
-        { onConflict: "block_id" }
-      ),
-    ];
-    return Promise.all(promises as any);
-  };
+      );
+      const promises = [
+        supabase.from<definitions["page_content"]>("page_content").upsert(
+          update.pages.map((p) => ({
+            page_id: p.id,
+            content: p,
+          })),
+          { onConflict: "page_id" }
+        ),
+        supabase.from<definitions["blocks"]>("blocks").upsert(
+          Object.values(update.blocks).map((b) => ({
+            block_id: b.id,
+            content: b,
+          })),
+          { onConflict: "block_id" }
+        ),
+      ];
+      return Promise.all(promises as any);
+    };
 
-  loadNote().then((res) => {
-    const currPageId = get(pageIdAtom);
-    const [pageContentResp, blockResp] = res;
-    const pageContents = (pageContentResp as any)
-      .data as definitions["page_content"][];
-    let currPage = pageContents.find((p) => p.page_id === currPageId);
-    if (currPage) {
-      set(pageFamily({ id: currPageId }), currPage.content);
-    }
-    ((blockResp as any).data as definitions["blocks"][])
-      .filter((b) => b.content.pageId === currPageId)
-      .forEach((b) => {
-        set(blockFamily({ id: b.block_id!, pageId: currPageId }), b.content);
-      });
-    const stared = get(starsAtom);
-    const newStars = new Set([...stared, ...(update.stars ?? [])]);
-    set(starsAtom, [...newStars]);
-  });
-});
+    loadNote().then((res) => {
+      const currPageId = get(pageIdAtom);
+      const [pageContentResp, blockResp] = res;
+      const pageContents = (pageContentResp as any)
+        .data as definitions["page_content"][];
+      let currPage = pageContents.find((p) => p.page_id === currPageId);
+      if (currPage) {
+        set(pageFamily({ id: currPageId }), currPage.content);
+      }
+      ((blockResp as any).data as definitions["blocks"][])
+        .filter((b) => b.content.pageId === currPageId)
+        .forEach((b) => {
+          set(blockFamily({ id: b.block_id!, pageId: currPageId }), b.content);
+        });
+      const stared = get(starsAtom);
+      const newStars = new Set([...stared, ...(update.stars ?? [])]);
+      set(starsAtom, [...newStars]);
+    });
+  }
+);
 
 const saveNotesAtom = atom(null, (get) => {
   const getNotes = async () => {
@@ -362,7 +373,7 @@ const saveNotesAtom = atom(null, (get) => {
     FileSaver.saveAs(blob, "note.json");
   });
 });
-const gotoPageAtom = atom<null, todayPageUpdate>(
+const gotoPageAtom = atom<null, [todayPageUpdate], void | Promise<void>>(
   null,
   async (get, set, update) => {
     let path: string, id: string;

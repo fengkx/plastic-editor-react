@@ -1,5 +1,5 @@
 import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue } from "jotai";
 import { EditableBlock } from "../Editor/blocks/Editable";
 import { editingBlockIdAtom } from "../Editor/store";
 import { Preview } from "./Preview";

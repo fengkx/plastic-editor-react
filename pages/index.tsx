@@ -1,5 +1,5 @@
 import { useMountEffect } from "@react-hookz/web";
-import { useUpdateAtom } from "jotai/utils";
+import { useSetAtom } from "jotai";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -11,7 +11,7 @@ import { BigCircleLoading } from "../components/Loading";
 const HomePage: NextPage = () => {
   const { gotoPageAtom } = useAdapter();
   const router = useRouter();
-  const gotoPage = useUpdateAtom(gotoPageAtom);
+  const gotoPage = useSetAtom(gotoPageAtom);
   useMountEffect(() => {
     gotoPage({ router, today: true, replace: true });
   });

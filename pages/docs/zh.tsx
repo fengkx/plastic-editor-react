@@ -1,7 +1,7 @@
 import { useMountEffect } from "@react-hookz/web";
 import { produce } from "immer";
 import { useAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { useSetAtom } from "jotai";
 import type { NextPage } from "next";
 import {
   AdapterProvider,
@@ -79,8 +79,8 @@ const pageId = "__docs__";
 export const DocIndexPage: NextPage = () => {
   const { blocksAtom, pageFamily, pageIdAtom } =
     useAdapter<typeof memoryAdapter>();
-  const setPageId = useUpdateAtom(pageIdAtom);
-  const setPage = useUpdateAtom(pageFamily({ id: pageId }));
+  const setPageId = useSetAtom(pageIdAtom);
+  const setPage = useSetAtom(pageFamily({ id: pageId }));
   const [originalBlocks, setBlocks] = useAtom(blocksAtom);
   useMountEffect(() => {
     setPageId(pageId);

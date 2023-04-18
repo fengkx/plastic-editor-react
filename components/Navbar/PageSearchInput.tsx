@@ -1,6 +1,4 @@
-import { produce } from "immer";
-import { atom, useAtom } from "jotai";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useNanoid } from "../../hooks/useNanoid";
@@ -13,9 +11,9 @@ export function PageSearchInput() {
   const { newPageAtom, pageIdAtom } = useAdapter();
   const [searchInput, setSearchInput] = useAtom(searchInputAtom);
   const [isShow, setIsShow] = useState(false);
-  const updatePageId = useUpdateAtom(pageIdAtom);
+  const updatePageId = useSetAtom(pageIdAtom);
   const [newPageId, genNew] = useNanoid();
-  const createNewPage = useUpdateAtom(newPageAtom);
+  const createNewPage = useSetAtom(newPageAtom);
   return (
     <div className="relative z-40">
       <input
@@ -62,7 +60,7 @@ const PageItemList: React.FC = () => {
   const { pageValuesAtom, pageIdAtom } = useAdapter();
   const pages = useAtomValue(pageValuesAtom);
   const searchInput = useAtomValue(searchInputAtom);
-  const updatePageId = useUpdateAtom(pageIdAtom);
+  const updatePageId = useSetAtom(pageIdAtom);
   return (
     <>
       {pages

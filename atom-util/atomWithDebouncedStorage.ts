@@ -7,7 +7,6 @@ export type Unsubscribe = () => void;
 export type Storage<Value> = {
   getItem: (key: string) => Value | Promise<Value>;
   setItem: (key: string, newValue: Value) => void | Promise<void>;
-  delayInit?: boolean;
   subscribe?: (key: string, callback: (value: Value) => void) => Unsubscribe;
 };
 
@@ -37,7 +36,7 @@ export const createJSONStorage = <T extends any>(
 export function atomWithDebouncedStorage<Value>(
   key: string,
   initialValue: Value,
-  isStaleAtom: WritableAtom<boolean, boolean>,
+  isStaleAtom: PrimitiveAtom<boolean>,
   wait: number,
   debounceOptions: Parameters<typeof _debounce>[2],
   storage: Storage<Value>,
@@ -57,21 +56,14 @@ export function atomWithDebouncedStorage<Value>(
     }
   };
 
-  const baseAtom = atom(storage.delayInit ? initialValue : getInitialValue());
+  const baseAtom = atom(getInitialValue());
 
   baseAtom.onMount = (setAtom) => {
     let unsub: Unsubscribe | undefined;
     if (storage.subscribe) {
       unsub = storage.subscribe(key, setAtom);
     }
-    if (storage.delayInit) {
-      const value = getInitialValue();
-      if (value instanceof Promise) {
-        value.then(setAtom);
-      } else {
-        setAtom(value);
-      }
-    }
+
     return unsub;
   };
 
@@ -88,15 +80,17 @@ export function atomWithDebouncedStorage<Value>(
       return get(baseAtom);
     },
     (get, set, update: SetStateAction<Value>) => {
-      const newValue =
+      const nextValue =
         typeof update === "function"
-          ? (update as (prev: Value) => Value)(get(baseAtom))
+          ? // @ts-expect-error
+            (update as (prev: Value) => Value)(get(baseAtom))
           : update;
-      set(baseAtom, newValue);
+      set(baseAtom, nextValue);
       set(isStaleAtom, true);
-      debouncedSetStorage(key, newValue, () => set(isStaleAtom, false));
+      debouncedSetStorage(key, nextValue, () => set(isStaleAtom, false));
     }
   );
 
+  // @ts-expect-error
   return anAtom;
 }

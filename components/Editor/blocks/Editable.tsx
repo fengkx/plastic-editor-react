@@ -8,8 +8,7 @@ import {
 } from "@react-hookz/web";
 import clsx from "clsx";
 import { produce } from "immer";
-import { useAtom } from "jotai";
-import { useUpdateAtom } from "jotai/utils";
+import { useAtom, useSetAtom } from "jotai";
 import { useCallback, useEffect, useRef } from "react";
 import tinykeys from "tinykeys";
 import { useNanoid } from "../../../hooks/useNanoid";
@@ -42,8 +41,8 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
   const [page, setPage] = usePage();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [anchorOffset, setAnchorOffset] = useAtom(anchorOffsetAtom);
-  const addNewBlock = useUpdateAtom(newBlockAtom);
-  const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
+  const addNewBlock = useSetAtom(newBlockAtom);
+  const setEditingBlockId = useSetAtom(editingBlockIdAtom);
   const shouldCreateNewBlockRef = useRef<boolean>(true);
   useEventListener(textareaRef, "compositionstart", () => {
     shouldCreateNewBlockRef.current = false;
@@ -121,7 +120,7 @@ export const EditableBlock: React.FC<EditablePropsType> = ({
       eventOptions: { passive: true, capture: true },
     }
   );
-  const deleteBlock = useUpdateAtom(deleteBlockAtom);
+  const deleteBlock = useSetAtom(deleteBlockAtom);
   useKeyboardEvent(
     "Backspace",
     (ev) => {

@@ -7,8 +7,8 @@ import type {
 import { format } from "date-fns";
 import FileSaver from "file-saver";
 import { produce } from "immer";
-import { Atom, atom, PrimitiveAtom, useAtom, WritableAtom } from "jotai";
-import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
+import { Atom, atom, PrimitiveAtom, useAtom, useAtomValue } from "jotai";
+import { atomFamily, atomWithDefault } from "jotai/utils";
 import { nanoid } from "nanoid";
 import { NextRouter } from "next/router";
 import {
@@ -146,42 +146,46 @@ const starsAtom = atomWithDebouncedStorage<string[]>(
   { maxWait: DEBOUNCE_MAX_WAIT },
   storage as Storage<string[]>
 );
-const deleteBlockAtom = atom<null, { path: number[]; blockId: string }>(
+const deleteBlockAtom = atom<
   null,
-  (get, set, update) => {
-    const { path, blockId } = update;
-    const blocks = get(blocksAtom);
-    const pages = get(pagesAtom);
-    const page = get(pageFamily({ id: get(pageIdAtom) }));
-    const pageEngine = new PageEngine(page);
-    const [closest, closetPos] = pageEngine.upClosest(path);
-    pageEngine.remove(path);
-    set(anchorOffsetAtom, Infinity);
-    set(editingBlockIdAtom, closest.id);
-    set(
-      pagesAtom,
-      produce(pages, (draft) => {
-        draft[page.id] = pageEngine.page;
-      })
-    );
-    set(
-      blocksAtom,
-      produce(blocks, (draft) => {
-        delete draft[blockId];
-      })
-    );
-  }
-);
+  [{ path: number[]; blockId: string }],
+  void | Promise<void>
+>(null, (get, set, update) => {
+  const { path, blockId } = update;
+  const blocks = get(blocksAtom);
+  const pages = get(pagesAtom);
+  const page = get(pageFamily({ id: get(pageIdAtom) }));
+  const pageEngine = new PageEngine(page);
+  const [closest, closetPos] = pageEngine.upClosest(path);
+  pageEngine.remove(path);
+  set(anchorOffsetAtom, Infinity);
+  set(editingBlockIdAtom, closest.id);
+  set(
+    pagesAtom,
+    produce(pages, (draft) => {
+      draft[page.id] = pageEngine.page;
+    })
+  );
+  set(
+    blocksAtom,
+    produce(blocks, (draft) => {
+      delete draft[blockId];
+    })
+  );
+});
 
 const newBlockAtom = atom<
   null,
-  {
-    newBlockId: string;
-    pageId: string;
-    path: number[];
-    content?: string;
-    op: "append" | "prepend" | "prependChild";
-  }
+  [
+    {
+      newBlockId: string;
+      pageId: string;
+      path: number[];
+      content?: string;
+      op: "append" | "prepend" | "prependChild";
+    }
+  ],
+  void | Promise<void>
 >(null, (get, set, update) => {
   const { newBlockId, pageId, path, content } = update;
   const newBlockAtom = blockFamily({ id: newBlockId, pageId, content });
@@ -207,12 +211,15 @@ const newBlockAtom = atom<
 
 const newPageAtom = atom<
   null,
-  {
-    newPageId: string;
-    title: string;
-    children?: ShallowBlock[];
-    goto?: boolean;
-  }
+  [
+    {
+      newPageId: string;
+      title: string;
+      children?: ShallowBlock[];
+      goto?: boolean;
+    }
+  ],
+  void | Promise<void>
 >(null, (get, set, update) => {
   const { newPageId, title, children, goto } = update;
   const newPageAtom = pageFamily({ id: newPageId, title, children });
@@ -222,23 +229,24 @@ const newPageAtom = atom<
   }
 });
 
-const moveBlockAtom = atom<null, { from: number[]; to: number[] }>(
+const moveBlockAtom = atom<
   null,
-  (get, set, update) => {
-    const { from, to } = update;
-    console.debug(update);
-    const pageId = get(pageIdAtom);
-    const page = get(pageFamily({ id: pageId }));
-    const pageEngine = new PageEngine(page);
-    console.debug(pageEngine.page);
-    const shallowBlock = pageEngine.access(from);
-    const [toParent] = pageEngine.accessParent(to);
-    pageEngine.remove(from);
-    toParent.children.splice(to[to.length - 1], 0, shallowBlock);
-    set(pageFamily({ id: pageId }), pageEngine.page);
-    console.debug(pageEngine.page);
-  }
-);
+  [{ from: number[]; to: number[] }],
+  void | Promise<void>
+>(null, (get, set, update) => {
+  const { from, to } = update;
+  console.debug(update);
+  const pageId = get(pageIdAtom);
+  const page = get(pageFamily({ id: pageId }));
+  const pageEngine = new PageEngine(page);
+  console.debug(pageEngine.page);
+  const shallowBlock = pageEngine.access(from);
+  const [toParent] = pageEngine.accessParent(to);
+  pageEngine.remove(from);
+  toParent.children.splice(to[to.length - 1], 0, shallowBlock);
+  set(pageFamily({ id: pageId }), pageEngine.page);
+  console.debug(pageEngine.page);
+});
 
 const pageValuesAtom = atom<(Partial<Page> & Pick<Page, "title" | "id">)[]>(
   (get) => {
@@ -260,17 +268,20 @@ const saveNotesAtom = atom(null, (get) => {
   FileSaver.saveAs(blob, "note.json");
 });
 
-const loadNotesAtom = atom<null, Note>(null, (get, set, update) => {
-  set(
-    pagesAtom,
-    update.pages.reduce((acc, cur) => {
-      acc[cur.id] = cur;
-      return acc;
-    }, {})
-  );
-  set(blocksAtom, update.blocks);
-  set(starsAtom, update.stars);
-});
+const loadNotesAtom = atom<null, [Note], void | Promise<void>>(
+  null,
+  (get, set, update) => {
+    set(
+      pagesAtom,
+      update.pages.reduce((acc, cur) => {
+        acc[cur.id] = cur;
+        return acc;
+      }, {})
+    );
+    set(blocksAtom, update.blocks);
+    set(starsAtom, update.stars ?? []);
+  }
+);
 
 const usePage = () => {
   return useAtom(pageFamily({ id: useAtomValue(pageIdAtom) }));
@@ -289,27 +300,30 @@ export type todayPageUpdate =
       replace?: boolean;
     }
   | { router: NextRouter; today: true; replace?: boolean };
-const gotoPageAtom = atom<null, todayPageUpdate>(null, (get, set, update) => {
-  let path: string, id: string;
-  if (update.today) {
-    const title = format(new Date(), "MMMM, dd, yyyy");
-    const pages = get(pageValuesAtom);
-    id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
-    path = `/note/${id}`;
-  } else {
-    id = update.id;
-    path = update.path;
-  }
-  const { router } = update;
-  if (router) {
-    if (update.replace) {
-      router.replace(path);
+const gotoPageAtom = atom<null, [todayPageUpdate], void | Promise<void>>(
+  null,
+  (get, set, update) => {
+    let path: string, id: string;
+    if (update.today) {
+      const title = format(new Date(), "MMMM, dd, yyyy");
+      const pages = get(pageValuesAtom);
+      id = pages.find((p) => p.title === title)?.id ?? nanoid(ID_LEN);
+      path = `/note/${id}`;
     } else {
-      router.push(path);
+      id = update.id;
+      path = update.path;
     }
-    set(pageIdAtom, id);
+    const { router } = update;
+    if (router) {
+      if (update.replace) {
+        router.replace(path);
+      } else {
+        router.push(path);
+      }
+      set(pageIdAtom, id);
+    }
   }
-});
+);
 
 export const memoryAdapter = {
   $$type: "memory" as "memory" | "supabase",

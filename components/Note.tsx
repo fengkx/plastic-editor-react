@@ -1,6 +1,6 @@
 import { Block } from "@plastic-editor/protocol/lib/protocol";
 import { useAtom } from "jotai";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { Editor } from "./Editor";
 import { useAdapter } from "./Editor/adapters/AdapterContext";

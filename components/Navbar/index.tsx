@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue } from "jotai";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
 import { PageSearchInput } from "./PageSearchInput";
 import { BigCircleLoading } from "../Loading";

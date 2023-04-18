@@ -1,5 +1,4 @@
-import { useAtom } from "jotai";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, Suspense, useRef, useEffect } from "react";
@@ -14,9 +13,9 @@ import { useToggle } from "@react-hookz/web";
 export const LeftAside: React.FC = () => {
   const router = useRouter();
   const { gotoPageAtom, loadNotesAtom, saveNotesAtom } = useAdapter();
-  const saveNote = useUpdateAtom(saveNotesAtom);
-  const loadNote = useUpdateAtom(loadNotesAtom);
-  const gotoPage = useUpdateAtom(gotoPageAtom);
+  const saveNote = useSetAtom(saveNotesAtom);
+  const loadNote = useSetAtom(loadNotesAtom);
+  const gotoPage = useSetAtom(gotoPageAtom);
   const onUploadFile = useCallback(
     async (ev) => {
       const file = ev!.target!.files![0] as File;
@@ -163,7 +162,7 @@ function StarPageList() {
 function StaredPageItem({ pageId }) {
   const { pageFamily, pageIdAtom } = useAdapter();
   const page = useAtomValue(pageFamily({ id: pageId }));
-  const updatePageId = useUpdateAtom(pageIdAtom);
+  const updatePageId = useSetAtom(pageIdAtom);
   return (
     <Link
       key={page.id}

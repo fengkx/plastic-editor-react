@@ -1,6 +1,6 @@
 import { produce } from "immer";
 import { useAtom } from "jotai";
-import { useAtomValue } from "jotai/utils";
+import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { useAdapter } from "../adapters/AdapterContext";
 

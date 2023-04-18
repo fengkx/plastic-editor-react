@@ -1,7 +1,7 @@
 import { Block } from "@plastic-editor/protocol/lib/protocol";
 import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
-import { useAtomValue, useUpdateAtom } from "jotai/utils";
+import { useAtomValue, useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { memo as ReactMemo, useCallback } from "react";
 import { useAdapter } from "../Editor/adapters/AdapterContext";
@@ -14,8 +14,8 @@ export type PropsType = {
 };
 const PreviewImpl: React.FC<PropsType> = ({ blockId, className }) => {
   const { blockFamily, pageIdAtom } = useAdapter();
-  const setAnchorOffset = useUpdateAtom(anchorOffsetAtom);
-  const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
+  const setAnchorOffset = useSetAtom(anchorOffsetAtom);
+  const setEditingBlockId = useSetAtom(editingBlockIdAtom);
   const focusCallback = useCallback(
     (ev) => {
       ev.stopPropagation();

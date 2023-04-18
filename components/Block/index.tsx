@@ -3,7 +3,7 @@ import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
 import { useMountEffect } from "@react-hookz/web";
 import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
-import { useUpdateAtom } from "jotai/utils";
+import { useSetAtom } from "jotai";
 import { nanoid } from "nanoid";
 import { memo as ReactMemo, useRef } from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
@@ -28,7 +28,7 @@ const BlockImpl: React.FC<PropsType> = ({
   pageId,
   initEditable,
 }) => {
-  const setEditingBlockId = useUpdateAtom(editingBlockIdAtom);
+  const setEditingBlockId = useSetAtom(editingBlockIdAtom);
   useMountEffect(() => {
     if (initEditable) {
       setEditingBlockId(shallowBlock.id);
@@ -40,7 +40,7 @@ const BlockImpl: React.FC<PropsType> = ({
   >(false);
   const blockRootRef = useRef<HTMLDivElement>(null);
   const { moveBlockAtom } = useAdapter();
-  const moveBlock = useUpdateAtom(moveBlockAtom);
+  const moveBlock = useSetAtom(moveBlockAtom);
   const [, drag, dragPreview] = useDrag({
     type: "BLOCK",
     item: { path },
