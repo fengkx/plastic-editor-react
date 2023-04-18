@@ -8,6 +8,5 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 module.exports = withBundleAnalyzer({
   experimental: {
     reactRoot: true,
-    esmExternals: true,
   },
 });

@@ -45,7 +45,11 @@ const BlockImpl: React.FC<PropsType> = ({
     type: "BLOCK",
     item: { path },
   });
-  const [{ isOver }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop<
+    { path: number[] },
+    unknown,
+    { isOver: boolean }
+  >({
     accept: "BLOCK",
     collect: (monitor) => {
       const isOver = monitor.isOver();

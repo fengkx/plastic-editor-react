@@ -1,5 +1,5 @@
 import { useMountEffect } from "@react-hookz/web";
-import produce from "immer";
+import { produce } from "immer";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import type { NextPage } from "next";

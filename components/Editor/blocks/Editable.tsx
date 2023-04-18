@@ -7,7 +7,7 @@ import {
   useMountEffect,
 } from "@react-hookz/web";
 import clsx from "clsx";
-import produce from "immer";
+import { produce } from "immer";
 import { useAtom } from "jotai";
 import { useUpdateAtom } from "jotai/utils";
 import { useCallback, useEffect, useRef } from "react";

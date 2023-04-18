@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { hasSupabase, supabase } from "../../../db";
 import { memoryAdapter } from "./memory";
 import { supbaseAdapter } from "./supabase";
@@ -8,6 +8,7 @@ const AdapterContext = createContext<IAdapter>(memoryAdapter);
 
 export type PropsType = {
   adapter?: IAdapter;
+  children?: React.ReactNode;
 };
 export function getParameterByName(name: string, url?: string): string | null {
   if (!url) url = window.location.href;

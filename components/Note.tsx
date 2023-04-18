@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { Editor } from "./Editor";
 import { useAdapter } from "./Editor/adapters/AdapterContext";
 import { Reference } from "./Reference";
-import produce from "immer";
+import { produce } from "immer";
 
 function Title() {
   const { usePage } = useAdapter();

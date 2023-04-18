@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 import { useAtom } from "jotai";
 import { useAtomValue } from "jotai/utils";
 import { useCallback } from "react";

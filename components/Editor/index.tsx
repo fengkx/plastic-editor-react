@@ -1,5 +1,5 @@
 import { useMountEffect } from "@react-hookz/web";
-import produce from "immer";
+import { produce } from "immer";
 import { useRouter } from "next/router";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";

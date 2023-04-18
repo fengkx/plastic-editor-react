@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useAtomValue, useUpdateAtom } from "jotai/utils";
 import Link from "next/link";

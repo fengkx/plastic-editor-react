@@ -6,7 +6,7 @@ import type {
 } from "@plastic-editor/protocol/lib/protocol";
 import { format } from "date-fns";
 import FileSaver from "file-saver";
-import produce from "immer";
+import { produce } from "immer";
 import { Atom, atom, PrimitiveAtom, useAtom, WritableAtom } from "jotai";
 import { atomFamily, atomWithDefault, useAtomValue } from "jotai/utils";
 import { nanoid } from "nanoid";
