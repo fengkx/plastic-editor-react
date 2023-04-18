@@ -1,6 +1,6 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import type { ShallowBlock } from "@plastic-editor/protocol/lib/protocol";
-import { useMountEffect, useSafeState } from "@react-hookz/web";
+import { useMountEffect } from "@react-hookz/web";
 import clsx from "clsx";
 import deepEqual from "fast-deep-equal/es6/react";
 import { useUpdateAtom } from "jotai/utils";
@@ -35,7 +35,7 @@ const BlockImpl: React.FC<PropsType> = ({
     }
   });
 
-  const [dropMoveDirection, setDropMoveDirection] = useSafeState<
+  const [dropMoveDirection, setDropMoveDirection] = useState<
     false | "up" | "down"
   >(false);
   const blockRootRef = useRef<HTMLDivElement>(null);
