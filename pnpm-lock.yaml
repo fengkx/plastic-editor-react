@@ -14,14 +14,14 @@ dependencies:
     specifier: ^1.29.1
     version: 1.29.1
   "@tauri-apps/api":
-    specifier: ^1.0.0-beta.8
-    version: 1.0.0-beta.8
+    specifier: ^1.2.0
+    version: 1.2.0
   clsx:
-    specifier: ^1.1.1
-    version: 1.1.1
+    specifier: ^1.2.1
+    version: 1.2.1
   date-fns:
-    specifier: ^2.28.0
-    version: 2.28.0
+    specifier: ^2.29.3
+    version: 2.29.3
   fast-deep-equal:
     specifier: ^3.1.3
     version: 3.1.3
@@ -29,11 +29,11 @@ dependencies:
     specifier: ^2.0.5
     version: 2.0.5
   immer:
-    specifier: ^9.0.7
-    version: 9.0.7
+    specifier: ^9.0.21
+    version: 9.0.21
   jotai:
     specifier: ^1.5.0
-    version: 1.5.0(immer@9.0.7)(react@18.2.0)
+    version: 1.5.0(immer@9.0.21)(react@18.2.0)
   lodash.debounce:
     specifier: ^4.0.8
     version: 4.0.8
@@ -586,12 +586,12 @@ packages:
     dependencies:
       tslib: 2.5.0
 
-  /@tauri-apps/api@1.0.0-beta.8:
+  /@tauri-apps/api@1.2.0:
     resolution:
       {
-        integrity: sha512-a56lXB7XvQ4+fKtT0pxpkjTSKhyrQ1Vmjyvt2ox3mT9xw3l7s8IOKHJ1WuqW6TA6xdoy3Cyja3Z3prw8hflS7g==,
+        integrity: sha512-lsI54KI6HGf7VImuf/T9pnoejfgkNoXveP14pVV7XarrQ46rOejIVJLFqHI9sRReJMGdh2YuCoI3cc/yCWCsrw==,
       }
-    engines: { node: ">= 12.13.0", npm: ">= 6.6.0", yarn: ">= 1.19.1" }
+    engines: { node: ">= 14.6.0", npm: ">= 6.6.0", yarn: ">= 1.19.1" }
     dev: false
 
   /@tauri-apps/cli-darwin-arm64@1.2.3:
@@ -1228,10 +1228,10 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /clsx@1.1.1:
+  /clsx@1.2.1:
     resolution:
       {
-        integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==,
+        integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==,
       }
     engines: { node: ">=6" }
     dev: false
@@ -1352,10 +1352,10 @@ packages:
       }
     dev: true
 
-  /date-fns@2.28.0:
+  /date-fns@2.29.3:
     resolution:
       {
-        integrity: sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==,
+        integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==,
       }
     engines: { node: ">=0.11" }
     dev: false
@@ -2296,10 +2296,10 @@ packages:
     engines: { node: ">= 4" }
     dev: true
 
-  /immer@9.0.7:
+  /immer@9.0.21:
     resolution:
       {
-        integrity: sha512-KGllzpbamZDvOIxnmJ0jI840g7Oikx58lBPWV0hUh7dtAyZpFqqrBZdKka5GlTwMTZ1Tjc/bKKW4VSFAt6BqMA==,
+        integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==,
       }
     dev: false
 
@@ -2531,7 +2531,7 @@ packages:
     hasBin: true
     dev: true
 
-  /jotai@1.5.0(immer@9.0.7)(react@18.2.0):
+  /jotai@1.5.0(immer@9.0.21)(react@18.2.0):
     resolution:
       {
         integrity: sha512-fR8kLAAgkh/3tFD/eCNhhF2eWYinqeU6TAIDWlLccUFihhhcmbQs1FHkTTAFZXoq9UM9fsLqMqk54jffMKVC5Q==,
@@ -2568,7 +2568,7 @@ packages:
       xstate:
         optional: true
     dependencies:
-      immer: 9.0.7
+      immer: 9.0.21
       react: 18.2.0
     dev: false
 
